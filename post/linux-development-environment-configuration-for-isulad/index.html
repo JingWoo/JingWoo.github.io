@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta content="yes" name="apple-mobile-web-app-capable" />
+  <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+  <meta name="referrer" content="never">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="author" content="kveln">
+  <title>Linux Development Environment Configuration for iSulad | WuJing&#39;s Blog</title>
+  <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <!-- <link href="https://jingwoo.github.io/media/css/bootstrap.min.css" rel="stylesheet"> -->
+  <!--  <link href="https://jingwoo.github.io/media/css/all.min.css" rel="stylesheet" type="text/css"> -->
+  <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+  <link rel="alternate" type="application/rss+xml" title="Linux Development Environment Configuration for iSulad | WuJing&#39;s Blog » Feed" href="https://jingwoo.github.io/atom.xml">
+  <link rel="stylesheet"href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+  <link href="https://jingwoo.github.io/styles/main.css" rel="stylesheet">
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/highlight.min.js"></script>
+  <!-- <script src="https://jingwoo.github.io/media/scripts/jquery.min.js"></script> -->
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <meta property="og:description" content="Linux Development Environment Configuration for iSulad"/>
+    <meta property="og:url" content="https://jingwoo.github.io/post/linux-development-environment-configuration-for-isulad/"/>
+    <meta property="og:locale" content="zh-CN"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content="WuJing&#39;s Blog"/>
+  </head>
+  <body>
+  	<!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand" href="https://jingwoo.github.io">WuJing&#39;s Blog</a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="https://jingwoo.github.io">首页</a>
+              
+          </li>
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="https://jingwoo.github.io/archives">归档</a>
+              
+          </li>
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="https://jingwoo.github.io/tags">标签</a>
+              
+          </li>
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="https://jingwoo.github.io/post/about">关于</a>
+              
+          </li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('https://jingwoo.github.io/media/images/home-bg.jpg')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+          	<span class="tags">
+          	 
+            <a href="https://jingwoo.github.io/tag/linux/" class="tag">linux</a>
+            
+        </span>
+            <h1>Linux Development Environment Configuration for iSulad</h1>
+            <span class="meta">
+            	Posted on
+              2020-07-12，14 min read
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Content -->
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <h2 id="virtual-machine-installation">Virtual machine installation</h2>
+<pre><code class="language-bash">qemu-img create -f raw -o size=120G Fedora_Server.img
+virsh dumpxml {guest-id, guestname or uuid} &gt; Fedora_Server.xml
+virsh define Fedora_Server.xml
+virsh start Fedora_Server
+virsh vncdisplay Fedora_Server
+</code></pre>
+<h2 id="network-configuration">Network Configuration</h2>
+<pre><code class="language-bash">vim /etc/sysconfig/network-scripts/ifcfg-ens3
+systemctl enable NetworkManager
+systemctl start NetworkManager
+proxy
+</code></pre>
+<h2 id="awesome-tools-installation">Awesome Tools Installation</h2>
+<pre><code class="language-bash">dnf upgrade -y 
+dnf autoremove -y
+dnf install -y vim htop the_silver_searcher fd-find bat exa ccze git tig 
+dnf install -y fzf glances tmux ShellCheck ranger aria2 axel cloc task jq zsh npm
+dnf install -y cmatrix screenfetch mariadb-server mariadb mycli
+</code></pre>
+<pre><code class="language-bash">git config --global user.name username
+git config --global user.email email@xxx.com
+git config --global http.sslVerify false
+
+dnf install npm
+npm install -g diff-so-fancy
+git config --global core.pager &quot;diff-so-fancy | less --tabs=4 -RFX&quot;
+git config --global color.ui true
+git config --global color.diff-highlight.oldNormal    &quot;red bold&quot;
+git config --global color.diff-highlight.oldHighlight &quot;red bold 52&quot;
+git config --global color.diff-highlight.newNormal    &quot;green bold&quot;
+git config --global color.diff-highlight.newHighlight &quot;green bold 22&quot;
+
+git config --global color.diff.meta       &quot;11&quot;
+git config --global color.diff.frag       &quot;magenta bold&quot;
+git config --global color.diff.commit     &quot;yellow bold&quot;
+git config --global color.diff.old        &quot;red bold&quot;
+git config --global color.diff.new        &quot;green bold&quot;
+git config --global color.diff.whitespace &quot;red reverse&quot;
+git config --bool --global diff-so-fancy.markEmptyLines false
+git config --bool --global diff-so-fancy.changeHunkIndicators false
+git config --bool --global diff-so-fancy.stripLeadingSymbols false
+git config --bool --global diff-so-fancy.useUnicodeRuler false
+git config --global diff-so-fancy.rulerWidth 47    # git log's commit header width
+</code></pre>
+<pre><code class="language-bash">sh -c &quot;$(curl -kfsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&quot;
+cat ~/.zshrc
+plugins=(git zsh-autosuggestions extract zsh-syntax-highlighting history-substring-search history zsh-256color vi-mode z wd taskwarrior)
+# git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+# git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+# git clone https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search
+# cd $ZSH_CUSTOM/plugins &amp;&amp; git clone https://github.com/chrissicool/zsh-256color
+
+vim plugins/history-substring-search/history-substring-search.plugin.zsh
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+vim plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=3'
+
+git clone https://github.com/junegunn/fzf.git
+./install
+vim ~/.zshrc
+[ -f ~/.fzf.zsh ] &amp;&amp; source ~/.fzf.zsh
+export FZF_DEFAULT_COMMAND='fd --hidden --follow -E &quot;.git&quot; -E &quot;node_modules&quot; . /etc /home'
+export FZF_DEFAULT_OPTS='--height 90% --layout=reverse --bind=alt-j:down,alt-k:up,alt-i:toggle+down --border --preview &quot;(bat --style=numbers --color=always {}) 2&gt; /dev/null | head -500&quot; --preview-window=down'
+
+# use fzf in bash and zsh
+# Use ~~ as the trigger sequence instead of the default **
+# export FZF_COMPLETION_TRIGGER=' f'
+#
+
+# Options to fzf command
+#export FZF_COMPLETION_OPTS=''
+#
+
+# Use fd (https://github.com/sharkdp/fd) instead of the default find
+# command for listing path candidates.
+# - The first argument to the function ($1) is the base path to start traversal
+# - See the source code (completion.{bash,zsh}) for the details.
+#
+_fzf_compgen_path() {
+  fd --hidden --follow -E &quot;.git&quot; -E &quot;node_modules&quot; . /etc /home
+}
+
+# Use fd to generate the list for directory completion
+_fzf_compgen_dir() {
+  fd --type d --hidden --follow -E &quot;.git&quot; -E &quot;node_modules&quot; . /etc /home
+}
+
+</code></pre>
+<pre><code class="language-bash">dnf install -y ctags cscope global
+dnf install -y neovim
+pip2 install --no-cache-dir --upgrade --force-reinstall neovim
+pip3 install --no-cache-dir --upgrade --force-reinstall neovim
+
+
+vim ~/.zshrc
+alias vi='nvim'
+alias vim='nvim'
+
+curl -ksLf https://spacevim.org/install.sh | bash
+cat ~/.SpaceVim.d/init.toml
+[options]
+    # set spacevim theme. by default colorscheme layer is not loaded,
+    # if you want to use more colorscheme, please load the colorscheme
+    # layer
+    # colorscheme = &quot;gruvbox&quot;
+    colorscheme = &quot;NeoSolarized&quot;
+    colorscheme_bg = &quot;dark&quot;
+    # Disable guicolors in basic mode, many terminal do not support 24bit
+    # true colors
+    enable_guicolors = true
+    # Disable statusline separator, if you want to use other value, please
+    # install nerd fonts
+    statusline_separator = &quot;arrow&quot;
+    statusline_inactive_separator = &quot;bar&quot;
+    buffer_index_type = 4
+    windows_index_type = 3
+    enable_statusline_mode = true
+     # left sections of statusline
+    statusline_left_sections = [
+       'winnr',
+       'major mode',
+       'filename',
+       'fileformat',
+       'minor mode lighters',
+       'version control info',
+       'search status'
+    ]
+    # right sections of statusline
+    statusline_right_sections = [
+       'cursorpos',
+       'percentage',
+       'input method',
+       'date',
+       'time'
+    ]
+
+    enable_tabline_filetype_icon = true
+    enable_statusline_display_mode = true
+    statusline_unicode_symbols = true
+    realtime_leader_guide = 1
+    enable_statusline_tag = true
+    # Enable vim compatible mode, avoid changing origin vim key bindings
+    vimcompatible = true
+    automatic_update = true
+    enable_neomake = false
+    # enable_ale = true
+    filemanager = &quot;defx&quot;
+    # enable_ycm = 1
+    # autocomplete_method = &quot;coc&quot;
+
+# Enable autocomplete layer
+# [[layers]]
+# name = 'autocomplete'
+# autocomplete_method = &quot;ycm&quot;
+# auto-completion-return-key-behavior = &quot;complete&quot;
+# auto-completion-tab-key-behavior = &quot;smart&quot;
+# enable = false
+
+[[custom_plugins]]
+  name = 'neoclide/coc.nvim'
+  merge = 0
+  build =  'yarn install --frozen-lockfile'
+
+# [[layers]]
+  # name = 'lsp'
+  # filetypes = [
+    # 'c',
+    # 'cpp'
+  # ]
+
+# [layers.override_cmd]
+  # c = ['ccls', '--log-file=/tmp/ccls.log']
+  # cpp = ['ccls', '--log-file=/tmp/ccls.log']
+
+[[layers]]
+name = 'shell'
+default_position = 'right'
+
+# [[layers]]
+# name = &quot;cscope&quot;
+
+[[layers]]
+name = &quot;VersionControl&quot;
+enable-gtm-status = true
+
+[[layers]]
+name = &quot;checkers&quot;
+show_cursor_error = false
+
+[[layers]]
+ name = &quot;colorscheme&quot;
+
+# [[layers]]
+# name = &quot;debug&quot;
+
+# [[layers]]
+# name = &quot;floobits&quot;
+
+# [[layers]]
+# name = &quot;fzf&quot;
+
+[[layers]]
+name = &quot;git&quot;
+git-plugin = &quot;fugitive&quot;
+
+# [[layers]]
+#   name = &quot;lang#c&quot;
+#   clang_executable = &quot;/usr/bin/clang&quot;
+#   [layer.clang_std]
+#     c = &quot;c11&quot;
+#     cpp = &quot;c++1z&quot;
+
+# [[layers]]
+# name = &quot;lang#go&quot;
+
+[[layers]]
+  name = &quot;tmux&quot;
+  # tmux_navigator_modifier = &quot;alt&quot;
+
+[[layers]]
+  name = &quot;leaderf&quot;
+
+[[layers]]
+  name = &quot;sudo&quot;
+
+[[layers]]
+  name = &quot;tags&quot;
+
+[[layers]]
+ name = &quot;tools&quot;
+
+[[layers]]
+ name = 'core'
+ # filetree_show_hidden = true
+
+# [[layers]]
+#  name = &quot;core#statusline&quot;
+#  enable = false
+
+[[layers]]
+  name = &quot;ui&quot;
+  enable_sidebar = true
+
+# [[layers]]
+# name = &quot;gtags&quot;
+# gtagslabel = &quot;ctags&quot;
+
+# [custom_plugins]]
+# name = &quot;Shougo/dein.vim&quot;
+
+# [[custom_plugins]]
+  # name = 'liuchengxu/vista.vim'
+</code></pre>
+<pre><code class="language-bash">set tabstop=4
+set expandtab
+set shiftwidth=4
+nnoremap &lt;F9&gt; :set invpaste paste?&lt;CR&gt;
+set pastetoggle=&lt;F9&gt;
+set showmode
+set cmdheight=1
+
+&quot; let g:EasyMotion_do_mapping = 1
+
+&quot; filetype plugin indent on
+&quot; syntax enable
+&quot;
+&quot; Default value is &quot;normal&quot;, Setting this option to &quot;high&quot; or &quot;low&quot; does use the
+&quot; same Solarized palette but simply shifts some values up or down in order to
+&quot; expand or compress the tonal range displayed.
+let g:neosolarized_contrast = &quot;normal&quot;
+
+&quot; Special characters such as trailing whitespace, tabs, newlines, when displayed
+&quot; using &quot;:set list&quot; can be set to one of three levels depending on your needs.
+&quot; Default value is &quot;normal&quot;. Provide &quot;high&quot; and &quot;low&quot; options.
+let g:neosolarized_visibility = &quot;normal&quot;
+
+&quot; I make vertSplitBar a transparent background color. If you like the origin
+&quot; solarized vertSplitBar style more, set this value to 0.
+let g:neosolarized_vertSplitBgTrans = 1
+
+&quot; If you wish to enable/disable NeoSolarized from displaying bold, underlined
+&quot; or italicized&quot; typefaces, simply assign 1 or 0 to the appropriate variable.
+&quot; Default values:
+let g:neosolarized_bold = 1
+let g:neosolarized_underline = 1
+let g:neosolarized_italic = 0
+
+&quot; Used to enable/disable &quot;bold as bright&quot; in Neovim terminal. If colors of bold
+&quot; text output by commands like `ls` aren't what you expect, you might want to
+&quot; try disabling this option. Default value:
+let g:neosolarized_termBoldAsBright = 1
+</code></pre>
+<pre><code class="language-bash"># coc.nvim config
+reference: https://github.com/neoclide/coc.nvim
+https://github.com/neoclide/coc.nvim/wiki
+https://github.com/MaskRay/ccls/wiki
+https://clangd.llvm.org/
+
+# configurate for coc.nvim
+Open config file with command :CocConfig
+{
+  &quot;languageserver&quot;: {
+    &quot;ccls&quot;: {
+      &quot;command&quot;: &quot;ccls&quot;,
+      &quot;filetypes&quot;: [&quot;c&quot;, &quot;cpp&quot;, &quot;cuda&quot;, &quot;objc&quot;, &quot;objcpp&quot;],
+      &quot;rootPatterns&quot;: [&quot;.ccls-root&quot;, &quot;compile_commands.json&quot;],
+      &quot;initializationOptions&quot;: {
+        &quot;cache&quot;: {
+          &quot;directory&quot;: &quot;.ccls-cache&quot;
+        },
+        &quot;client&quot;: {
+          &quot;snippetSupport&quot;: true
+        }
+      }
+    }
+  }
+}
+
+#Set project for coc.nvim(compile_commands.json and .ccls)
+cmake -H. -BDebug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES
+ln -s Debug/compile_commands.json .
+
+cat .ccls
+%compile_commands.json
+%c -std=c11
+%cpp -std=c++14
+%c %cpp -pthread
+%h %hpp --include=Global.h
+-Iinc
+</code></pre>
+<pre><code class="language-bash">cd ~/.cache/vimfiles/repos/github.com/Valloric/YouCompleteMe
+git submodule update --init --recursive
+dnf install -y cmake python3-devel gcc-c++ clang golang
+python3 install.py --clang-completer
+
+cd /root/.SpaceVim
+-----------------------------------------------
+modified: config/plugins_before/YouCompleteMe.vim
+-----------------------------------------------
+@@ -1,4 +1,4 @@
+-&quot;let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
++let g:ycm_global_ycm_extra_conf = '~/.cache/vimfiles/repos/github.com/Valloric/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py'
+ &quot;let g:ycm_confirm_extra_conf = 0
+ let g:ycm_collect_identifiers_from_tags_files =
+       \ get(g:, 'ycm_collect_identifiers_from_tags_files', 1)
+-----------------------------------------------
+modified: vimrc
+-----------------------------------------------
+@@ -25,3 +25,9 @@ if 1
+     execute 'source' fnamemodify(expand('&lt;sfile&gt;'), ':h').'/config/main.vim'
+ endif
+
+cat ~/.Spacevim/vimrc
+ &quot; vim:set et sw=2
++set tabstop=4
++set expandtab
++set shiftwidth=4
++nnoremap &lt;F9&gt; :set invpaste paste?&lt;CR&gt;
++set pastetoggle=&lt;F9&gt;
++set showmode
+
+vim ~/.cache/vimfiles/repos/github.com/Valloric/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py
+-----------------------------------------------
+modified: .ycm_extra_conf.py
+-----------------------------------------------
+@@ -85,6 +85,18 @@ get_python_inc(),
+ 'cpp/ycm/tests/gmock/include',
+ '-isystem',
+ 'cpp/ycm/benchmarks/benchmark/include',
++'-I',
++'/usr/local/include',
++'-I',
++'/usr/include',
++'-isystem',
++'/usr/lib/gcc/x86_64-redhat-linux/9/include',
++'-isystem',
++'/usr/include/c++/9',
++'-isystem',
++'/usr/include/c++/9/bits',
++'-isystem',
++'/usr/include/linux',
+ ]
+
+# oh-my-tmux
+$ cd
+$ git clone https://github.com/gpakosz/.tmux.git
+$ ln -s -f .tmux/.tmux.conf
+$ cp .tmux/.tmux.conf.local .
+
+dnf install -y tmuxinator
+echo &quot;export EDITOR='vim'&quot; &gt;&gt; ~/.zshrc
+echo &quot;source ~/.bin/.tmuxinator.zsh&quot; &gt;&gt; ~/.zshrc
+cat ~/.bin/.tmuxinator.zsh
+#compdef _tmuxinator tmuxinator
+
+_tmuxinator() {
+  local commands projects
+  commands=(${(f)&quot;$(tmuxinator commands zsh)&quot;})
+  projects=(${(f)&quot;$(tmuxinator completions start)&quot;})
+
+  if (( CURRENT == 2 )); then
+    _alternative \
+      'commands:: _describe -t commands &quot;tmuxinator subcommands&quot; commands' \
+      'projects:: _describe -t projects &quot;tmuxinator projects&quot; projects'
+  elif (( CURRENT == 3)); then
+    case $words[2] in
+      copy|cp|c|debug|delete|rm|open|o|start|s|edit|e)
+        _arguments '*:projects:($projects)'
+      ;;
+    esac
+  fi
+
+  return
+}
+
+complete -F _tmuxinator tmuxinator mux
+alias mux=&quot;tmuxinator&quot;
+# Local Variables:
+# mode: Shell-Script
+# sh-indentation: 2
+# indent-tabs-mode: nil
+# sh-basic-offset: 2
+# End:
+# vim: ft=zsh sw=2 ts=2 et
+
+tmuxinator new YOUR_PROJECT
+tmuxinator edit YOUR_PROJECT
+tmuxinator start YOUR_PROJECT
+tmuxinator stop YOUR_PROJECT
+
+vim ~/.tmux.conf
+...
+# replace C-b by C-a instead of using both prefixes
+set-option -g prefix2 `
+
+unbind '&quot;'
+bind - splitw -v
+unbind %
+bind | splitw -h
+# move status line to top
+set -g status-position bottom
+
+cd ~/.tmux
+mkdir plugins
+git clone https://github.com/tmux-plugins/tmux-resurrect.git
+cd ~/.tmux/plugins
+git clone https://github.com/tmux-plugins/tmux-continuum.git
+
+run-shell ~/.tmux/plugins/tmux-resurrect/resurrect.tmux
+run-shell ~/.tmux/plugins/tmux-continuum/continuum.tmux
+
+vim  ~/.tmux.conf
+...
+# set -g @continuum-save-interval '1440'
+set -g @continuum-save-interval '0'
+set -g @continuum-restore 'on'
+</code></pre>
+<h2 id="terminal-true-color-support">terminal true-color support</h2>
+<p>xshell tools - configuation - advance - select using true-color<br>
+reference：https://github.com/icymind/NeoSolarized<br>
+https://gist.github.com/XVilka/8346728</p>
+<p>code font: JetBrains Mono/Cascadia Code/Consolas<br>
+https://www.jetbrains.com/lp/mono/</p>
+<p>dnf install -y ccls bear<br>
+if failed to install coc.nvim, execute <code>yarn config set &quot;strict-ssl&quot; false -g</code></p>
+<p>[coc.nvim] error: Some plugin change completeopt on insert mode<br>
+rm -rf <code>find ~ -name 'deoplete*'</code></p>
+<h2 id="start-isulad-on-high-fedora-version-eg31">start iSulad on high Fedora version (eg:31)</h2>
+<pre><code class="language-bash"># sudo grubby --update-kernel=ALL --args=&quot;systemd.unified_cgroup_hierarchy=0&quot;    # use cgroup v1
+# sudo grubby --update-kernel=ALL --args=&quot;systemd.unified_cgroup_hierarchy=1&quot;    # use cgroup v2
+
+$ sudo dnf install -y grubby
+$ sudo grubby --update-kernel=ALL --args=&quot;systemd.unified_cgroup_hierarchy=0&quot;
+$ sudo reboot
+</code></pre>
+<h2 id="developingdebuging-isulad">Developing/Debuging iSulad</h2>
+<pre><code class="language-bash">dnf install valgrind gdb gdb-gdbserver tcpdump ystemtap ltrace strace
+dnf group install 'Development Tools' 
+dnf install gcc rpm-build rpm-devel rpmlint make python bash coreutils diffutils patch rpmdevtools
+
+ulimit -c unlimited
+echo &quot;1&quot; &gt; /proc/sys/kernel/core_uses_pid
+echo &quot;/corefile/core-%e-%p-%t&quot; &gt; /proc/sys/kernel/core_pattern
+
+valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --leak-resolution=high --show-reachable=yes --log-file=valgrind_memcheck.log -v isulad
+</code></pre>
+<h3 id="isulad-network-debug">iSulad Network Debug</h3>
+<pre><code class="language-bash">openssl x509 -in cert.pem -noout -text
+./testssl.sh IP:port
+sslscan --tlsall IP:port
+openssl s_client -connect IP:port
+tcpdump port $port
+tcpdump -i xxx port $port
+tshark -i xxx
+</code></pre>
+<h2 id=""></h2>
+
+          
+        <div class="comment">
+          
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<div id="gitalk-container"></div>
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'b1eac4da34d39de4083e',
+    clientSecret: '6288b2f1e40cdb4fb670392b100f60fcea5c5cff',
+    repo: 'jingwoo.github.io',
+    owner: 'jingwoo',
+    admin: ['jingwoo'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+  gitalk.render('gitalk-container')
+</script>
+
+          
+          
+        
+        </div>
+      </div>
+    </div>
+  </article>
+ <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <li class="list-inline-item">
+              <a href="https://jingwoo.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li>
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>WuJing&#39;s Blog</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://jingwoo.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://jingwoo.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <script src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  </body>
+</html>
+

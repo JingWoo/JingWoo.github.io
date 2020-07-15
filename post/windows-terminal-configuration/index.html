@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta content="yes" name="apple-mobile-web-app-capable" />
+  <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+  <meta name="referrer" content="never">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="author" content="kveln">
+  <title>Windows Terminal Configuration | WuJing&#39;s Blog</title>
+  <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <!-- <link href="https://jingwoo.github.io/media/css/bootstrap.min.css" rel="stylesheet"> -->
+  <!--  <link href="https://jingwoo.github.io/media/css/all.min.css" rel="stylesheet" type="text/css"> -->
+  <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+  <link rel="alternate" type="application/rss+xml" title="Windows Terminal Configuration | WuJing&#39;s Blog » Feed" href="https://jingwoo.github.io/atom.xml">
+  <link rel="stylesheet"href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+  <link href="https://jingwoo.github.io/styles/main.css" rel="stylesheet">
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/highlight.min.js"></script>
+  <!-- <script src="https://jingwoo.github.io/media/scripts/jquery.min.js"></script> -->
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <meta property="og:description" content="Windows Terminal Configuration"/>
+    <meta property="og:url" content="https://jingwoo.github.io/post/windows-terminal-configuration/"/>
+    <meta property="og:locale" content="zh-CN"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content="WuJing&#39;s Blog"/>
+  </head>
+  <body>
+  	<!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand" href="https://jingwoo.github.io">WuJing&#39;s Blog</a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="https://jingwoo.github.io">首页</a>
+              
+          </li>
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="https://jingwoo.github.io/archives">归档</a>
+              
+          </li>
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="https://jingwoo.github.io/tags">标签</a>
+              
+          </li>
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="https://jingwoo.github.io/post/about">关于</a>
+              
+          </li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('https://jingwoo.github.io/media/images/home-bg.jpg')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+          	<span class="tags">
+          	 
+            <a href="https://jingwoo.github.io/tag/windows/" class="tag">windows</a>
+            
+        </span>
+            <h1>Windows Terminal Configuration</h1>
+            <span class="meta">
+            	Posted on
+              2020-07-15，7 min read
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Content -->
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <h2 id="useful-keyboard-shortcuts-in-windows-terminal">Useful Keyboard Shortcuts in windows terminal</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Command</th>
+<th>Shortcuts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Open a new tab</td>
+<td>ctrl+shift+t</td>
+</tr>
+<tr>
+<td style="text-align:left">Open a new pane</td>
+<td>alt+shift+d</td>
+</tr>
+<tr>
+<td style="text-align:left">Duplicate tab</td>
+<td>ctrl+shift+d</td>
+</tr>
+<tr>
+<td style="text-align:left">Open default settings files</td>
+<td>ctrl+alt+,</td>
+</tr>
+<tr>
+<td style="text-align:left">Toggle full screen</td>
+<td>f11</td>
+</tr>
+<tr>
+<td style="text-align:left">Open next tab</td>
+<td>ctrl+tab</td>
+</tr>
+<tr>
+<td style="text-align:left">Open previous tab</td>
+<td>ctrl+shift+tab</td>
+</tr>
+<tr>
+<td style="text-align:left">Open a specific tab</td>
+<td>ctrl+alt+1</td>
+</tr>
+<tr>
+<td style="text-align:left">Close pane</td>
+<td>ctrl+shift+w</td>
+</tr>
+<tr>
+<td style="text-align:left">Move pane focus</td>
+<td>alt+&quot;left&quot;<code>,</code>&quot;right&quot;<code>,</code>&quot;up&quot;<code>,</code>&quot;down&quot;</td>
+</tr>
+<tr>
+<td style="text-align:left">Resize a pane</td>
+<td>alt+shift+&quot;left&quot;<code>,</code>&quot;right&quot;<code>,</code>&quot;up&quot;<code>,</code>&quot;down&quot;</td>
+</tr>
+</tbody>
+</table>
+<h2 id="set-up-powerline-in-windows-terminal">Set up Powerline in Windows Terminal</h2>
+<h3 id="set-up-powerline-in-powershell">Set up Powerline in PowerShell</h3>
+<pre><code class="language-powershell"># Run PowerShell as administrator
+Install-Module posh-git -Scope CurrentUser
+Install-Module oh-my-posh -Scope CurrentUser
+Install-Module -Name PSReadLine -Scope CurrentUser -Force -SkipPublisherCheck
+</code></pre>
+<h3 id="customize-your-powershell-prompt">Customize your PowerShell prompt</h3>
+<pre><code class="language-po">$ notepad $PROFILE
+	Import-Module posh-git
+	Import-Module oh-my-posh
+	Set-Theme Paradox
+</code></pre>
+<h2 id="customize-windows-terminal-profile-settings">Customize Windows Terminal Profile Settings</h2>
+<pre><code class="language-json">// This file was initially generated by Windows Terminal 1.0.1401.0
+// It should still be usable in newer versions, but newer versions might have additional
+// settings, help text, or changes that you will not see unless you clear this file
+// and let us generate a new one for you.
+
+// To view the default settings, hold &quot;alt&quot; while clicking on the &quot;Settings&quot; button.
+// For documentation on these settings, see: https://aka.ms/terminal-documentation
+{
+    &quot;$schema&quot;: &quot;https://aka.ms/terminal-profiles-schema&quot;,
+
+    &quot;defaultProfile&quot;: &quot;{61c54bbd-c2c6-5271-96e7-009a87ff44bf}&quot;,
+
+    // You can add more global application settings here.
+    // To learn more about global settings, visit https://aka.ms/terminal-global-settings
+
+    // If enabled, selections are automatically copied to your clipboard.
+    &quot;copyOnSelect&quot;: true,
+
+    // If enabled, formatted data is also copied to your clipboard
+    &quot;copyFormatting&quot;: false,
+
+    &quot;theme&quot;: &quot;dark&quot;,
+
+    &quot;alwaysShowTabs&quot;: false,
+
+    &quot;showTabsInTitlebar&quot;: true,
+
+    &quot;confirmCloseAllTabs&quot;: true,
+
+    &quot;wordDelimiters&quot;: &quot; ./\\()\&quot;'-:,.;&lt;&gt;~!@#$%^&amp;*|+=[]{}~?│&quot;,
+
+    &quot;snapToGridOnResize&quot;: true,
+
+    // A profile specifies a command to execute paired with information about how it should look and feel.
+    // Each one of them will appear in the 'New Tab' dropdown,
+    //   and can be invoked from the commandline with `wt.exe -p xxx`
+    // To learn more about profiles, visit https://aka.ms/terminal-profile-settings
+    &quot;profiles&quot;:
+    {
+        &quot;defaults&quot;:
+        {
+            // Put settings here that you want to apply to all profiles.
+            &quot;padding&quot;: &quot;0, 0, 0, 0&quot;
+        },
+        &quot;list&quot;:
+        [
+            {
+                // Make changes here to the powershell.exe profile.
+                &quot;guid&quot;: &quot;{61c54bbd-c2c6-5271-96e7-009a87ff44bf}&quot;,
+                &quot;name&quot;: &quot;Windows PowerShell&quot;,
+                &quot;commandline&quot;: &quot;powershell.exe&quot;,
+                &quot;hidden&quot;: false,
+                &quot;acrylicOpacity&quot;: 0.7,
+                &quot;colorScheme&quot; : &quot;Frost&quot;,
+                &quot;cursorColor&quot; : &quot;#000000&quot;,
+                &quot;fontFace&quot;: &quot;Cascadia Code PL&quot;,
+                &quot;useAcrylic&quot;: true
+            },
+            {
+                &quot;name&quot;: &quot;Ubuntu-20.04&quot;,
+                &quot;tabTitle&quot;: &quot;Ubuntu 💻&quot;,
+                &quot;source&quot;: &quot;Windows.Terminal.Wsl&quot;,
+                &quot;colorScheme&quot;: &quot;Solarized Dark&quot;,
+                &quot;startingDirectory&quot;: &quot;//wsl$/Ubuntu-20.04/root&quot;,
+                &quot;guid&quot;: &quot;{07b52e3e-de2c-5db4-bd2d-ba144ed6c273}&quot;,
+                &quot;fontFace&quot;: &quot;Consolas&quot;,
+                &quot;padding&quot;: &quot;0, 0, 0, 0&quot;,
+                &quot;antialiasingMode&quot;: &quot;grayscale&quot;,
+                &quot;cursorShape&quot;: &quot;bar&quot;,
+                &quot;scrollbarState&quot;: &quot;hidden&quot;,
+                &quot;historySize&quot;: 9001,
+                &quot;closeOnExit&quot;: &quot;graceful&quot;,
+                &quot;hidden&quot;: false,
+                // &quot;experimental.retroTerminalEffect&quot;: true,
+                &quot;acrylicOpacity&quot;: 0.8,
+                &quot;useAcrylic&quot;: true
+            },
+            {
+                &quot;acrylicOpacity&quot; : 0.5,
+                &quot;closeOnExit&quot; : true,
+                &quot;colorScheme&quot; : &quot;One Half Dark&quot;,
+                &quot;commandline&quot; : &quot;ssh root@ip&quot;,
+                &quot;cursorColor&quot; : &quot;#FFFFFF&quot;,
+                &quot;cursorShape&quot; : &quot;bar&quot;,
+                &quot;fontFace&quot; : &quot;Consolas&quot;,
+                &quot;fontSize&quot; : 14,
+                &quot;guid&quot; : &quot;{592D0432-1020-4DF6-83D4-928A7BE1D31A}&quot;,
+                &quot;historySize&quot; : 9001,
+                &quot;icon&quot; : &quot;ms-appx:///ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.png&quot;,
+                &quot;name&quot; : &quot;xxxx&quot;,
+                &quot;snapOnInput&quot; : true,
+                &quot;startingDirectory&quot; : &quot;&quot;,
+                &quot;useAcrylic&quot; : false
+            }
+        ]
+    },
+
+    // Add custom color schemes to this array.
+    // To learn more about color schemes, visit https://aka.ms/terminal-color-schemes
+    &quot;schemes&quot;: [
+        {
+            &quot;name&quot; : &quot;Frost&quot;,
+            &quot;background&quot; : &quot;#FFFFFF&quot;,
+            &quot;black&quot; : &quot;#3C5712&quot;,
+            &quot;blue&quot; : &quot;#17b2ff&quot;,
+            &quot;brightBlack&quot; : &quot;#749B36&quot;,
+            &quot;brightBlue&quot; : &quot;#27B2F6&quot;,
+            &quot;brightCyan&quot; : &quot;#13A8C0&quot;,
+            &quot;brightGreen&quot; : &quot;#89AF50&quot;,
+            &quot;brightPurple&quot; : &quot;#F2A20A&quot;,
+            &quot;brightRed&quot; : &quot;#F49B36&quot;,
+            &quot;brightWhite&quot; : &quot;#741274&quot;,
+            &quot;brightYellow&quot; : &quot;#991070&quot;,
+            &quot;cyan&quot; : &quot;#3C96A6&quot;,
+            &quot;foreground&quot; : &quot;#000000&quot;,
+            &quot;green&quot; : &quot;#6AAE08&quot;,
+            &quot;purple&quot; : &quot;#991070&quot;,
+            &quot;red&quot; : &quot;#8D0C0C&quot;,
+            &quot;white&quot; : &quot;#6E386E&quot;,
+            &quot;yellow&quot; : &quot;#991070&quot;
+        }
+    ],
+
+    // Add custom keybindings to this array.
+    // To unbind a key combination from your defaults.json, set the command to &quot;unbound&quot;.
+    // To learn more about keybindings, visit https://aka.ms/terminal-keybindings
+    &quot;keybindings&quot;:
+    [
+        // Copy and paste are bound to Ctrl+Shift+C and Ctrl+Shift+V in your defaults.json.
+        // These two lines additionally bind them to Ctrl+C and Ctrl+V.
+        // To learn more about selection, visit https://aka.ms/terminal-selection
+        { &quot;command&quot;: {&quot;action&quot;: &quot;copy&quot;, &quot;singleLine&quot;: false }, &quot;keys&quot;: &quot;ctrl+c&quot; },
+        { &quot;command&quot;: &quot;paste&quot;, &quot;keys&quot;: &quot;ctrl+v&quot; },
+
+        // Press Ctrl+Shift+F to open the search box
+        { &quot;command&quot;: &quot;find&quot;, &quot;keys&quot;: &quot;ctrl+shift+f&quot; },
+
+        // Press Alt+Shift+D to open a new pane.
+        // - &quot;split&quot;: &quot;auto&quot; makes this pane open in the direction that provides the most surface area.
+        // - &quot;splitMode&quot;: &quot;duplicate&quot; makes the new pane use the focused pane's profile.
+        // To learn more about panes, visit https://aka.ms/terminal-panes
+        { &quot;command&quot;: { &quot;action&quot;: &quot;splitPane&quot;, &quot;split&quot;: &quot;auto&quot;, &quot;splitMode&quot;: &quot;duplicate&quot; }, &quot;keys&quot;: &quot;alt+shift+d&quot; }
+    ]
+}
+
+</code></pre>
+
+          
+          <p class="next-post">下一篇：
+            <a href="https://jingwoo.github.io/post/linux-development-environment-configuration-for-isulad/">
+              <span class="post-title">
+                Linux Development Environment Configuration for iSulad&rarr;
+              </span>
+            </a>
+          </p>
+        
+        <div class="comment">
+          
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<div id="gitalk-container"></div>
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'b1eac4da34d39de4083e',
+    clientSecret: '6288b2f1e40cdb4fb670392b100f60fcea5c5cff',
+    repo: 'jingwoo.github.io',
+    owner: 'jingwoo',
+    admin: ['jingwoo'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+  gitalk.render('gitalk-container')
+</script>
+
+          
+          
+        
+        </div>
+      </div>
+    </div>
+  </article>
+ <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <li class="list-inline-item">
+              <a href="https://jingwoo.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li>
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>WuJing&#39;s Blog</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://jingwoo.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://jingwoo.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <script src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  </body>
+</html>
+
