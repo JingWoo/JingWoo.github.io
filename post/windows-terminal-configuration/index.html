@@ -156,13 +156,13 @@
 </table>
 <h2 id="set-up-powerline-in-windows-terminal">Set up Powerline in Windows Terminal</h2>
 <h3 id="set-up-powerline-in-powershell">Set up Powerline in PowerShell</h3>
-<pre><code class="language-powershell"># Run PowerShell as administrator
+<pre><code class="language-bash"># Run PowerShell as administrator
 Install-Module posh-git -Scope CurrentUser
 Install-Module oh-my-posh -Scope CurrentUser
 Install-Module -Name PSReadLine -Scope CurrentUser -Force -SkipPublisherCheck
 </code></pre>
 <h3 id="customize-your-powershell-prompt">Customize your PowerShell prompt</h3>
-<pre><code class="language-po">$ notepad $PROFILE
+<pre><code class="language-bash">$ notepad $PROFILE
 	Import-Module posh-git
 	Import-Module oh-my-posh
 	Set-Theme Paradox
