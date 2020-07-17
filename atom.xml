@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://jingwoo.github.io</id>
     <title>WuJing&apos;s Blog</title>
-    <updated>2020-07-15T10:07:57.193Z</updated>
+    <updated>2020-07-17T08:01:51.646Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://jingwoo.github.io"/>
     <link rel="self" href="https://jingwoo.github.io/atom.xml"/>
@@ -10,6 +10,293 @@
     <logo>https://jingwoo.github.io/images/avatar.png</logo>
     <icon>https://jingwoo.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, WuJing&apos;s Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[ Introduction to SELinux]]></title>
+        <id>https://jingwoo.github.io/post/introduction-to-selinux/</id>
+        <link href="https://jingwoo.github.io/post/introduction-to-selinux/">
+        </link>
+        <updated>2020-07-17T07:55:31.000Z</updated>
+        <content type="html"><![CDATA[<p>[TOC]</p>
+<h2 id="selinux-overview">SELinux Overview</h2>
+<figure data-type="image" tabindex="1"><img src="https://jingwoo.github.io/post-images/1594972737178.jpg" alt="" loading="lazy"></figure>
+<p><em>Security-Enhanced Linux</em> (SELinux) is a security architecture integrated into the 2.6.<em><code>x</code></em> kernel using the <em>Linux Security Modules</em> (LSM). It is a project of the United States National Security Agency (NSA) and the SELinux community.</p>
+<p>Security Enhanced Linux (SELinux) provides an additional layer of system security. SELinux fundamentally answers the question: &quot;May <subject> do <action> to <object>&quot;, for example: &quot;May a web server access files in users' home directories?&quot;. All processes and files are labeled. SELinux policy rules define how processes interact with files, as well as how processes interact with each other.</p>
+<h2 id="selinux-architectrue">SELinux  Architectrue</h2>
+<p>SELinux is a Linux Security Module (LSM) that is built into the Linux kernel. The SELinux subsystem in the kernel is driven by a security policy which is controlled by the administrator and loaded at boot. All security-relevant, kernel-level access operations on the system are intercepted by SELinux and  examined in the context of the loaded security policy. If the loaded policy allows the operation, it<br>
+continues. Otherwise, the operation is blocked and the process receives an error. SELinux decisions, such as allowing or disallowing access, are cached. This cache is known as the Access Vector Cache (AVC). When using these cached decisions, SELinux policy rules need to be checked less, which increases performance. Remember that SELinux policy rules have no effect if DAC rules deny access first.</p>
+<h2 id="selinux-package">SELinux Package</h2>
+<p><em>policycoreutils</em>: provides utilities, such as <code>semanage</code>, <code>restorecon</code>, <code>audit2allow</code>, <code>semodule</code>, <code>load_policy</code>, and <code>setsebool</code>, for operating and managing SELinux.</p>
+<p><em>selinux-policy</em>: provides the SELinux Reference Policy. Provides a basic directory structure, the selinux-policy.conf file, and RPM<br>
+macros</p>
+<p><em>selinux-policy-targeted</em>: provides the SELinux targeted policy</p>
+<p><em>selinux-policy-targeted</em>: provides the SELinux targeted policy.</p>
+<p><em>libselinux</em>: provides an API for SELinux applications.</p>
+<p><em>libselinux-utils</em>: provides the avcstat, getenforce, getsebool, matchpathcon, selinuxconlist, selinuxdefcon, selinuxenabled, and setenforce utilities.</p>
+<p><em>libselinux-python</em>: provides Python bindings for developing SELinux applications.</p>
+<p><em>selinux-policy-devel</em>: provides utilities for creating a custom SELinux policy and policy modules.</p>
+<p><em>selinux-policy-doc</em>: provides manual pages that describe how to configure SELinux altogether with various services.</p>
+<p><em>selinux-policy-mls</em>: provides the MLS (Multi-Level Security) SELinux policy. setroubleshoot-server translates denial messages, produced when access is denied by SELinux, into detailed descriptions that can be viewed with the sealert utility, also provided in this<br>
+package.</p>
+<p><em>setools-console</em>: provides the Tresys Technology SETools distribution , a number of utilities and libraries for analyzing and querying policy, audit log monitoring and reporting, and file context management. The setools package is a meta-package for SETools. The setools-gui package provides the apol and seaudit utilities. The setools-console package provides the sechecker, sediff, seinfo, sesearch, and findcon command-line utilities. See the Tresys Technology SETools page for information about these utilities. Note that setools and setools-gui packages are available only when the Red Hat Network Optional channel is enabled. For further<br>
+information, see Scope of Coverage Details. mcstrans translates levels, such as s0-s0:c0.c1023, to a form that is easier to read, such as SystemLow-SystemHigh.</p>
+<p><em>setools</em>, <em>setools-gui</em>, and <em>setools-console</em>: these packages provide the <a href="http://oss.tresys.com/projects/setools">Tresys Technology SETools distribution</a>, a number of tools and libraries for analyzing and querying policy, audit log monitoring and reporting, and file context management.</p>
+<p><em>libselinux-utils</em>: provides the <code>avcstat</code>, <code>getenforce</code>, <code>getsebool</code>, <code>matchpathcon</code>, <code>selinuxconlist</code>, <code>selinuxdefcon</code>, <code>selinuxenabled</code>, <code>setenforce</code>, <code>togglesebool</code> tools.</p>
+<p><em>mcstrans</em>: translates levels, such as <code>s0-s0:c0.c1023</code>, to an easier to read form, such as <code>SystemLow-SystemHigh</code>. This package is not installed by default.</p>
+<p><em>policycoreutils-python</em>: provides utilities such as semanage, audit2allow, audit2why, and chcat, for operating and managing SELinux.</p>
+<p><em>policycoreutils-gui</em>: provides system-config-selinux, a graphical utility for managing SELinux.</p>
+<h2 id="selinux-states-and-modes">SELinux States And Modes</h2>
+<p>SELinux can run in one of three modes: disabled, permissive, or enforcing.</p>
+<p>Disabled mode is strongly discouraged; not only does the system avoid enforcing the SELinux policy, it also avoids labeling any persistent objects such as files, making it difficult to enable SELinux in the future.</p>
+<p>In permissive mode, the system acts as if SELinux is enforcing the loaded security policy, including labeling objects and emitting access denial entries in the logs, but it does not actually deny any operations. While not recommended for production systems, permissive mode can be helpful for SELinux policy development.</p>
+<p>Enforcing mode is the default, and recommended, mode of operation; in enforcing mode SELinux operates normally, enforcing the loaded security policy on the entire system.</p>
+<pre><code class="language-bash">$ cat /etc/selinux/config
+# This file controls the state of SELinux on the system.
+# SELINUX= can take one of these three values:
+# enforcing - SELinux security policy is enforced.
+# permissive - SELinux prints warnings instead of enforcing.
+# disabled - No SELinux policy is loaded.
+SELINUX=enforcing
+# SELINUXTYPE= can take one of these two values:
+# default - equivalent to the old strict and targeted policies
+# mls     - Multi-Level Security (for military and educational use)
+# src     - Custom policy built from source
+SELINUXTYPE=default
+
+# SETLOCALDEFS= Check local definition changes
+SETLOCALDEFS=0
+</code></pre>
+<p>Use the <code>setenforce</code> utility to change between enforcing and permissive mode.</p>
+<pre><code class="language-bash"># Use Enforcing or 1 to put SELinux in enforcing mode.
+# Use Permissive or 0 to put SELinux in permissive mode.
+$ setenforce [Enforcing|Permissive|1|0]
+</code></pre>
+<p>Use the <code>getenforce</code> or <code>sestatus</code> commands to check in which mode SELinux is running. The <code>getenforce</code> command returns <code>Enforcing</code>, <code>Permissive</code>, or <code>Disabled</code>.</p>
+<pre><code class="language-bash">$ getenforce
+</code></pre>
+<pre><code class="language-bash">$ sestatus
+SELinux status:                 enabled
+SELinuxfs mount:                /sys/fs/selinux
+SELinux root directory:         /etc/selinux
+Loaded policy name:             targeted
+Current mode:                   enforcing
+Mode from config file:          enforcing
+Policy MLS status:              enabled
+Policy deny_unknown status:     allowed
+Memory protection checking:     actual (secure)
+Max kernel policy version:      32
+</code></pre>
+<p>Set individual domains to permissive mode while the system runs in enforcing mode.</p>
+<pre><code class="language-bash">semanage permissive -a container_t
+</code></pre>
+<h2 id="enabledisable-selinux-on-linux">Enable/Disable SELinux On Linux</h2>
+<h3 id="ubuntu">Ubuntu</h3>
+<pre><code class="language-bash">## Enable SELinux
+# Install SELinux package
+$ sudo apt install policycoreutils selinux-utils selinux-basics
+# Activate SELinux
+$ sudo selinux-activate
+# Set SELinux to enforcing mode
+$ sudo selinux-config-enforcing
+# Reboot system
+$ reboot
+# Check SELinux states
+$ sestatus
+
+## Disable SELinux
+# set states
+sed -i &quot;s/SELINUX=enforcing/SELINUX=disabled&quot; /etc/selinux/config
+# reboot system
+$ reboot
+</code></pre>
+<h3 id="fedora">Fedora</h3>
+<pre><code class="language-bash">## Enable SELinux
+# Install SELinux package
+$ sudo dnf install policycoreutils selinux-policy setools setools-console libselinux-utils setroubleshoot selinux-policy-targeted selinux-policy libselinux libselinux-python policycoreutils-python
+# set states
+$ vim /etc/selinux/config
+	# This file controls the state of SELinux on the system.
+    # SELINUX= can take one of these three values:
+    #       enforcing - SELinux security policy is enforced.
+    #       permissive - SELinux prints warnings instead of enforcing.
+    #       disabled - No SELinux policy is loaded.
+    SELINUX=pass:quotes[*enforcing*]
+    # SELINUXTYPE= can take one of these two values:
+    #       targeted - Targeted processes are protected,
+    #       mls - Multi Level Security protection.
+    SELINUXTYPE=targeted
+# reboot system
+$ reboot
+
+## Disable SELinux
+# set states
+sed -i &quot;s/SELINUX=enforcing/SELINUX=disabled&quot; /etc/selinux/config
+# reboot system
+$ reboot
+</code></pre>
+<h2 id="selinux-context">SELinux Context</h2>
+<p>Processes and files are labeled with an SELinux context that contains additional information, such as an SELinux user, role, type, and, optionally, a level. When running SELinux, all of this information is used to make access control decisions.  SELinux provides a combination of RoleBased Access Control (RBAC), Type Enforcement (TE), and, optionally, Multi-Level Security (MLS).</p>
+<p>SELinux contexts follow the SELinux user:role:type:level syntax.</p>
+<pre><code class="language-bash">$ ls -Z /etc/adjtime
+-rw-r--r--. root root system_u:object_r:adjtime_t:s0   /etc/adjtime
+$ stat -c &quot;%C&quot; /etc/adjtime
+system_u:object_r:adjtime_t:s0
+</code></pre>
+<h3 id="selinux-user">SELinux user</h3>
+<p>The SELinux user identity is an identity known to the policy that is authorized for a specific set of<br>
+roles, and for a specific MLS/MCS range.</p>
+<pre><code class="language-bash">$ semanage login -l
+Login Name           SELinux User         MLS/MCS Range        Service
+__default__          unconfined_u         s0-s0:c0.c1023       *
+root                 unconfined_u         s0-s0:c0.c1023       *
+$ id -Z
+unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+$ seinfo -u
+Users: 6
+   root
+   staff_u
+   sysadm_u
+   system_u
+   unconfined_u
+   user_u
+</code></pre>
+<h3 id="selinux-role">SELinux Role</h3>
+<p>Part of SELinux is the Role-Based Access Control (RBAC) security model. The role is an attribute of RBAC. SELinux users are authorized for roles, and roles are authorized for domains. The role serves as an intermediary between domains and SELinux users. The roles that can be entered determine which domains can be entered; ultimately, this controls which object types can be accessed. This helps reduce vulnerability to privilege escalation attacks.</p>
+<p>To list all available roles, enter the following command:</p>
+<pre><code class="language-bash">$ seinfo -r
+</code></pre>
+<h3 id="selinux-type">SELinux Type</h3>
+<p>The type is an attribute of Type Enforcement. The type defines a domain for processes, and a type for files. SELinux policy rules define how types can access each other, whether it be a domain accessing a type, or a domain accessing another domain. Access is only allowed if a specific SELinux policy rule exists that allows it.</p>
+<h3 id="selinux-level">SELinux Level</h3>
+<p>The level is an attribute of MLS and MCS. An MLS range is a pair of levels, written as lowlevelhighlevel if the levels differ, or lowlevel if the levels are identical ( s0-s0 is the same as s0). Each level is a sensitivity-category pair, with categories being optional. If there are categories, the level is written as sensitivity:category-set. If there are no categories, it is written as sensitivity. If the category set is a contiguous series, it can be abbreviated. For example, c0.c3 is the same as c0,c1,c2,c3. The /etc/selinux/targeted/setrans.conf file maps levels (s0:c0) to human-readable form (that is CompanyConfidential). In Red Hat Enterprise Linux, targeted policy enforces MCS, and in MCS, there is just one sensitivity, s0. MCS in Red Hat Enterprise Linux supports 1024 different categories: c0 through to c1023. s0-s0:c0.c1023 is sensitivity s0 and authorized for all categories.</p>
+<h2 id="selinux-relabel-file">SELinux  Relabel File</h2>
+<p>The <code>chcon</code> command changes the SELinux context for files  (Temporary Changes )</p>
+<pre><code class="language-bash">chcon -R -t container_ro_file_t /var/lib/isulad/storage/overlay2
+</code></pre>
+<p><code>restorecon</code> command reads the files in the <code>/etc/selinux/targeted/contexts/files/</code> directory, to see which SELinux context files should have.</p>
+<pre><code class="language-bash">$ restorecon -R -v /var/lib/isulad/storage/overlay2
+restorecon reset /var/lib/isulad/storage/overlay2 context unconfined_u:object_r:container_ro_file_t:s0-
+&gt;system_u:object_r:var_lib_t:s0
+</code></pre>
+<p>The <code>semanage fcontext</code> command is used to change the SELinux context of files.    (Persistent Changes )</p>
+<pre><code class="language-bash">$ sudo semanage fcontext -a options file-name|directory-name
+</code></pre>
+<p>Use the ·restorecon· utility to apply the context changes:</p>
+<pre><code class="language-bash">$ sudo restorecon -v file-name|directory-name
+</code></pre>
+<p>Deleting an added Context</p>
+<pre><code class="language-bash">$ sudo semanage fcontext -d file-name|directory-name
+</code></pre>
+<h2 id="checking-the-default-selinux-context">Checking the Default SELinux Context</h2>
+<pre><code class="language-bash">$ chcon -R system_u:object_r:container_ro_file_t:s0 /var/lib/isulad/storage/overlay
+$ matchpathcon -V /var/lib/isulad/storage/overlay
+/var/lib/isulad/storage/overlay has context system_u:object_r:container_ro_file_t:s0, should be system_u:object_r:var_lib_t:s0
+</code></pre>
+<h2 id="selinux-context-process">SELinux Context Process</h2>
+<p>Use the ps -eZ command to view the SELinux context for processes.</p>
+<pre><code class="language-bash">$ ps -eZ | grep passwd
+unconfined_u:unconfined_r:passwd_t:s0-s0:c0.c1023 13212 pts/1 00:00:00 passwd
+</code></pre>
+<h2 id="selinux-boolean">SELinux Boolean</h2>
+<p>Booleans allow parts of SELinux policy to be changed at runtime, without any knowledge of SELinux<br>
+policy writing. This allows changes, such as allowing services access to NFS volumes, without reloading<br>
+or recompiling SELinux policy.</p>
+<pre><code class="language-bash">$ semanage boolean -l
+SELinux boolean                State  Default Description
+allow_cvs_read_shadow          (off  ,  off)  Determine whether cvs can read shadow password files.
+...
+$ getsebool -a
+allow_cvs_read_shadow-&gt;off
+...
+$ getsebool allow_cvs_read_shadow
+allow_cvs_read_shadow-&gt;off
+$ setsebool allow_cvs_read_shadow [on/off]
+# setsebool -P boolean-name on, To make changes persistent across reboots
+
+</code></pre>
+<p>INFORMATION GATHERING TOOLS</p>
+<h2 id="selinux-information-gathering-tools">SELinux Information Gathering Tools</h2>
+<pre><code class="language-bash">$ man seinfo
+$ man sesearch
+$ sesearch -A -s var_lib_t
+allow file_type fs_t:filesystem associate;
+allow file_type hugetlbfs_t:filesystem associate;
+allow file_type noxattrfs:filesystem associate;
+allow file_type ramfs_t:filesystem associate;
+allow file_type tmp_t:filesystem associate;
+allow file_type tmpfs_t:filesystem associate;
+allow var_lib_t var_lib_t:filesystem associate;
+</code></pre>
+<p>To see which objects are labeled as type</p>
+<pre><code class="language-bash">$ semanage fcontext -l | grep httpd_log_t
+/var/log/httpd(/.)?                               all files          system_u:object_r:httpd_log_t:s0  
+/var/log/nginx(/.)?                               all files          system_u:object_r:httpd_log_t:s0 
+...
+</code></pre>
+<h2 id="prioritizing-and-disabling-selinux-policy-modules">Prioritizing And Disabling SELinux Policy Modules</h2>
+<p>Install the module with the <code>semodule -i</code> command and set the priority of the module to 400</p>
+<pre><code class="language-bash">$ semodule -X 400 -i sandbox.pp
+$ semodule --list-modules=full | grep sandbox
+400 sandbox pp
+100 sandbox pp
+</code></pre>
+<p>Disabling a System Policy Module</p>
+<pre><code class="language-bash">semodule -d sandbox
+</code></pre>
+<h2 id="writing-selinux-policy">Writing SELinux Policy</h2>
+<h2 id="understanding-denials">Understanding Denials</h2>
+<p>When SELinux prevents any software from accessing a particular resource, it generates a message and logs it in <code>/var/log/audit/audit.log</code> or <code>/var/log/messages</code> if <strong>audit</strong> service is disabled.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Daemon</th>
+<th style="text-align:left">Log Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">auditd on</td>
+<td style="text-align:left"><code>/var/log/audit/audit.log</code></td>
+</tr>
+<tr>
+<td style="text-align:left">auditd off; rsyslogd on</td>
+<td style="text-align:left"><code>/var/log/messages</code></td>
+</tr>
+<tr>
+<td style="text-align:left">setroubleshootd, rsyslogd, and auditd on</td>
+<td style="text-align:left"><code>/var/log/audit/audit.log</code>. Easier-to-read denial messages also sent to <code>/var/log/messages</code></td>
+</tr>
+</tbody>
+</table>
+<p>if DAC rules (standard Linux permissions) allow access, check <code>/var/log/messages</code> and <code>/var/log/audit/audit.log</code> for <code>&quot;SELinux is preventing&quot;</code> and <code>&quot;denied&quot;</code> errors respectively. This can be done by running the following commands as the root user:</p>
+<pre><code class="language-bash">$ ausearch -m AVC,USER_AVC,SELINUX_ERR -ts today
+$ sudo grep &quot;SELinux is preventing&quot; /var/log/messages
+$ sudo grep &quot;denied&quot; /var/log/audit/audit.log
+$ aureport -a
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Searching For Command</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>all denials</td>
+<td><code>ausearch -m avc,user_avc,selinux_err,user_selinux_err</code></td>
+</tr>
+<tr>
+<td>denials for that today</td>
+<td><code>ausearch -m avc -ts today</code></td>
+</tr>
+<tr>
+<td>denials from the last 10 minutes</td>
+<td><code>ausearch -m avc -ts recent</code></td>
+</tr>
+</tbody>
+</table>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Windows Terminal Configuration]]></title>
         <id>https://jingwoo.github.io/post/windows-terminal-configuration/</id>
