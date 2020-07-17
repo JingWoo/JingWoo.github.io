@@ -99,8 +99,7 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
-          <p>[TOC]</p>
-<h2 id="selinux-overview">SELinux Overview</h2>
+          <h2 id="selinux-overview">SELinux Overview</h2>
 <figure data-type="image" tabindex="1"><img src="https://jingwoo.github.io/post-images/1594972737178.jpg" alt="" loading="lazy"></figure>
 <p><em>Security-Enhanced Linux</em> (SELinux) is a security architecture integrated into the 2.6.<em><code>x</code></em> kernel using the <em>Linux Security Modules</em> (LSM). It is a project of the United States National Security Agency (NSA) and the SELinux community.</p>
 <p>Security Enhanced Linux (SELinux) provides an additional layer of system security. SELinux fundamentally answers the question: &quot;May <subject> do <action> to <object>&quot;, for example: &quot;May a web server access files in users' home directories?&quot;. All processes and files are labeled. SELinux policy rules define how processes interact with files, as well as how processes interact with each other.</p>
@@ -296,7 +295,6 @@ $ setsebool allow_cvs_read_shadow [on/off]
 # setsebool -P boolean-name on, To make changes persistent across reboots
 
 </code></pre>
-<p>INFORMATION GATHERING TOOLS</p>
 <h2 id="selinux-information-gathering-tools">SELinux Information Gathering Tools</h2>
 <pre><code class="language-bash">$ man seinfo
 $ man sesearch
@@ -326,6 +324,14 @@ $ semodule --list-modules=full | grep sandbox
 <pre><code class="language-bash">semodule -d sandbox
 </code></pre>
 <h2 id="writing-selinux-policy">Writing SELinux Policy</h2>
+<p>The Guide to Writing SELinux Policy</p>
+<blockquote>
+<p>https://www.linuxtopia.org/online_books/writing_SELinux_policy_guide</p>
+</blockquote>
+<p>SELinux Policy for Container Runtimes</p>
+<blockquote>
+<p>https://github.com/containers/container-selinux</p>
+</blockquote>
 <h2 id="understanding-denials">Understanding Denials</h2>
 <p>When SELinux prevents any software from accessing a particular resource, it generates a message and logs it in <code>/var/log/audit/audit.log</code> or <code>/var/log/messages</code> if <strong>audit</strong> service is disabled.</p>
 <table>
