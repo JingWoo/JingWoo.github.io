@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://jingwoo.github.io</id>
     <title>WuJing&apos;s Blog</title>
-    <updated>2020-07-17T08:08:41.293Z</updated>
+    <updated>2020-07-18T07:55:59.728Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://jingwoo.github.io"/>
     <link rel="self" href="https://jingwoo.github.io/atom.xml"/>
@@ -10,6 +10,285 @@
     <logo>https://jingwoo.github.io/images/avatar.png</logo>
     <icon>https://jingwoo.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, WuJing&apos;s Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[issue template]]></title>
+        <id>https://jingwoo.github.io/post/issue-template/</id>
+        <link href="https://jingwoo.github.io/post/issue-template/">
+        </link>
+        <updated>2020-07-18T07:53:56.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="代码review-issue模板">代码Review issue模板</h2>
+<hr>
+<h3 id="code-reviewthere-is-a-logic-error-in-the-remove_name-function-of-the-rootfs_storec-file">【Code Review】There is a logic error in the remove_name function of the rootfs_store.c file</h3>
+<h3 id="isulad-versionbranch">iSulad version/branch</h3>
+<p>the latest version, implement_image</p>
+<h3 id="code-segment">Code Segment</h3>
+<pre><code class="language-c">static int remove_name(cntrootfs_t *cntr, const char *name)
+{
+	...
+    for (i = 0; i &lt; cntr-&gt;srootfs-&gt;names_len; i++) {
+        if (strcmp(cntr-&gt;srootfs-&gt;names[i], name) == 0) {
+            count++;
+        }
+    }
+
+    new_size = (cntr-&gt;srootfs-&gt;names_len - count) * sizeof(char *);
+    tmp_names = (char **)util_common_calloc_s(new_size);
+    if (tmp_names == NULL) {
+        ERROR(&quot;Out of memory&quot;);
+        return -1;
+    }
+    ...
+ }
+</code></pre>
+<h3 id="problem-analysis">Problem Analysis</h3>
+<p>When the name of the container is unique and the same as the name of the input parameter, the program will exit abnormally and there is a memory leak.</p>
+<h3 id="workaround">Workaround</h3>
+<p>When the name of the container is unique and the same as the name of the input parameter, the memory should be released directly, and the length is set to 0</p>
+<pre><code class="language-c">static int remove_name(cntrootfs_t *cntr, const char *name)
+{
+	...
+    for (i = 0; i &lt; cntr-&gt;srootfs-&gt;names_len; i++) {
+        if (strcmp(cntr-&gt;srootfs-&gt;names[i], name) == 0) {
+            count++;
+        }
+    }
+    
+	if (cntr-&gt;srootfs-&gt;names_len == count) {
+        util_free_array_by_len(cntr-&gt;srootfs-&gt;names, cntr-&gt;srootfs-&gt;names_len);
+        cntr-&gt;srootfs-&gt;names = NULL;
+        cntr-&gt;srootfs-&gt;names_len = 0;
+        return 0;
+    }
+    
+    new_size = (cntr-&gt;srootfs-&gt;names_len - count) * sizeof(char *);
+    tmp_names = (char **)util_common_calloc_s(new_size);
+    if (tmp_names == NULL) {
+        ERROR(&quot;Out of memory&quot;);
+        return -1;
+    }
+    ...
+ }
+</code></pre>
+<h3 id="代码检视rootfs_storec文件的remove_name函数存在逻辑错误">【代码检视】rootfs_store.c文件的remove_name函数存在逻辑错误</h3>
+<h3 id="isulad-版本及分支">iSulad 版本及分支</h3>
+<p>the latest version, implement_image</p>
+<h3 id="代码片段">代码片段</h3>
+<pre><code class="language-c">static int remove_name(cntrootfs_t *cntr, const char *name)
+{
+	...
+    for (i = 0; i &lt; cntr-&gt;srootfs-&gt;names_len; i++) {
+        if (strcmp(cntr-&gt;srootfs-&gt;names[i], name) == 0) {
+            count++;
+        }
+    }
+
+    new_size = (cntr-&gt;srootfs-&gt;names_len - count) * sizeof(char *);
+    tmp_names = (char **)util_common_calloc_s(new_size);
+    if (tmp_names == NULL) {
+        ERROR(&quot;Out of memory&quot;);
+        return -1;
+    }
+    ...
+ }
+</code></pre>
+<h3 id="问题分析">问题分析</h3>
+<p>当容器的names唯一且与入参name相同时，程序会异常退出且有内存泄漏。</p>
+<h3 id="解决方法">解决方法</h3>
+<p>当容器的names唯一且与入参name相同时，应该直接释放内存，且把长度设置成0</p>
+<pre><code class="language-c">static int remove_name(cntrootfs_t *cntr, const char *name)
+{
+	...
+    for (i = 0; i &lt; cntr-&gt;srootfs-&gt;names_len; i++) {
+        if (strcmp(cntr-&gt;srootfs-&gt;names[i], name) == 0) {
+            count++;
+        }
+    }
+    
+	if (cntr-&gt;srootfs-&gt;names_len == count) {
+        util_free_array_by_len(cntr-&gt;srootfs-&gt;names, cntr-&gt;srootfs-&gt;names_len);
+        cntr-&gt;srootfs-&gt;names = NULL;
+        cntr-&gt;srootfs-&gt;names_len = 0;
+        return 0;
+    }
+    
+    new_size = (cntr-&gt;srootfs-&gt;names_len - count) * sizeof(char *);
+    tmp_names = (char **)util_common_calloc_s(new_size);
+    if (tmp_names == NULL) {
+        ERROR(&quot;Out of memory&quot;);
+        return -1;
+    }
+    ...
+ }
+</code></pre>
+<h2 id="功能测试-issue模板">功能测试  issue模板</h2>
+<hr>
+<h3 id="function-testsegmentation-fault-from-isula-inspect">【Function Test】Segmentation fault from isula inspect</h3>
+<h3 id="what-version-of-isulad-and-which-branch-are-you-using">What version of  iSulad  and which branch are you using?</h3>
+<p>Client:<br>
+Version:      2.0.2<br>
+Git commit:   259d4126b9cfbf1ffce64ba3d65cc2de98298f76<br>
+Built:        2020-06-22T15:30:09.183997400+08:00</p>
+<p>Server:<br>
+Version:      2.0.2<br>
+Git commit:   259d4126b9cfbf1ffce64ba3d65cc2de98298f76<br>
+Built:        2020-06-22T15:30:09.183997400+08:00</p>
+<p>​       master &amp;&amp; stable-2.0 &amp;&amp; implement_image</p>
+<h3 id="what-operating-system-linux-windows-and-version-what-compiler-are-you-using">What operating system (Linux, Windows,...) and version?  What compiler are you using ?</h3>
+<p>Linux, fedora 32, gcc version 10.1.1</p>
+<h3 id="what-did-you-do-and-what-did-you-see">What did you do and what did you see ?</h3>
+<p>When executing command to inspect a empty object, a coredump occurs in the client program.</p>
+<pre><code>➜  iSulad git:(implement_image) ✗ isula inspect &quot;&quot;
+Segmentation fault (core dumpd)
+</code></pre>
+<h3 id="what-did-you-expect-to-see">What did you expect to see?</h3>
+<p>The program does not cause coredump, and it prompts that the inspection failed. eg：</p>
+<pre><code class="language-bash">➜  iSulad git:(implement_image) ✗ isula inspect  &quot;&quot;
+[]
+Inspect error: No such object:
+</code></pre>
+<h3 id="what-did-you-do-and-what-did-you-see-2">What did you do and what did you see ?</h3>
+<p>When executing command to inspect a empty object, a coredump occurs in the client program.</p>
+<h3 id="功能测试isula-inspect-段错误">【功能测试】isula inspect  段错误</h3>
+<h3 id="isula版本信息及项目分支">iSula版本信息及项目分支</h3>
+<p>Client:<br>
+Version:      2.0.2<br>
+Git commit:   259d4126b9cfbf1ffce64ba3d65cc2de98298f76<br>
+Built:        2020-06-22T15:30:09.183997400+08:00</p>
+<p>Server:<br>
+Version:      2.0.2<br>
+Git commit:   259d4126b9cfbf1ffce64ba3d65cc2de98298f76<br>
+Built:        2020-06-22T15:30:09.183997400+08:00</p>
+<p>​       master &amp;&amp; stable-2.0 &amp;&amp; implement_image</p>
+<h3 id="操作系统版本及编译器版本">操作系统版本及编译器版本</h3>
+<p>Linux, fedora 32, gcc version 10.1.1</p>
+<h3 id="问题是如何引起的重现步骤是什么问题现象是什么">问题是如何引起的？重现步骤是什么？问题现象是什么？</h3>
+<p>异常测试时，inspect空字符串会导致客户端程序coredump。</p>
+<pre><code>➜  iSulad git:(implement_image) ✗ isula inspect &quot;&quot;
+Segmentation fault (core dumpd)
+</code></pre>
+<h3 id="预期结果应该是什么">预期结果应该是什么？</h3>
+<p>程序不能出现coredump，且应该有清晰的错误提示. 例如：</p>
+<pre><code class="language-bash">➜  iSulad git:(implement_image) ✗ isula inspect  &quot;&quot;
+[]
+Inspect error: No such object:
+</code></pre>
+<h2 id="开发者测试-issue模板">开发者测试 issue模板</h2>
+<hr>
+<blockquote>
+<p>c</p>
+</blockquote>
+<h3 id="开发者测试-升级场景加载本地已存在的v1镜像导致isulad-coredump">【开发者测试】 升级场景加载本地已存在的v1镜像导致iSulad coredump</h3>
+<h3 id="用例描述">用例描述</h3>
+<blockquote>
+<p>测试套： StorageImagesCompatibilityUnitTest</p>
+<p>用例名：test_load_v1_image</p>
+</blockquote>
+<pre><code class="language-c++">TEST_F(StorageImagesCompatibilityUnitTest, test_load_v1_image)
+{
+    ...
+    opts.driver_name = strdup(&quot;overlay&quot;);
+    ASSERT_EQ(image_store_init(&amp;opts), 0); --- core dumpd
+    free(opts.storage_root);
+	...
+}
+</code></pre>
+<h3 id="环境">环境:</h3>
+<blockquote>
+<h4 id="操作系统编译器">操作系统/编译器</h4>
+<blockquote>
+<p>Linux, fedora 32, gcc version 10.1.1</p>
+</blockquote>
+<h4 id="isulad版本">iSulad版本</h4>
+<blockquote>
+<p>Client:<br>
+Version:      2.0.2<br>
+Git commit:   259d4126b9cfbf1ffce64ba3d65cc2de98298f76<br>
+Built:        2020-06-22T15:30:09.183997400+08:00</p>
+</blockquote>
+<blockquote>
+<p>Server:<br>
+Version:      2.0.2<br>
+Git commit:   259d4126b9cfbf1ffce64ba3d65cc2de98298f76<br>
+Built:        2020-06-22T15:30:09.183997400+08:00</p>
+</blockquote>
+<h4 id="开发分支">开发分支</h4>
+<blockquote>
+<p>implement_image</p>
+</blockquote>
+</blockquote>
+<h3 id="根因分析">根因分析</h3>
+<blockquote>
+<p>从layer store获取的层信息存在多个层没有parent(正常情况下只有一个层没有)</p>
+</blockquote>
+<h3 id="解决办法">解决办法</h3>
+<blockquote>
+<p>对外部模块获取的层信息进行严格校验</p>
+<p>MR： https://gitee.com/openeuler/iSulad/commit/99a42f7d1c60a2140d6b3da3dd8d23196a68bca5</p>
+</blockquote>
+<hr>
+<h3 id="dtfunction-testcode-review">[DT/Function Test/Code Review]</h3>
+<h3 id="what-version-of-isulad-and-which-branch-are-you-using-2">What version of  iSulad  and which branch are you using?</h3>
+<h3 id="what-operating-system-linux-windows-and-version-what-compiler-are-you-using-2">What operating system (Linux, Windows,...) and version?  What compiler are you using ?</h3>
+<h3 id="what-did-you-do-and-what-did-you-see-3">What did you do and what did you see ?</h3>
+<h3 id="what-did-you-expect-to-see-2">What did you expect to see?</h3>
+<h3 id="开发者测试功能测试代码检视">【开发者测试/功能测试/代码检视】</h3>
+<h3 id="isula版本信息及项目分支-2">iSula版本信息及项目分支</h3>
+<h3 id="操作系统版本及编译器版本-2">操作系统版本及编译器版本</h3>
+<h3 id="问题描述及重现步骤">问题描述及重现步骤</h3>
+<h3 id="预期结果">预期结果</h3>
+<h1 id="pull-request-template">Pull Request Template</h1>
+<h3 id="description">Description</h3>
+<h3 id="related-issue">Related Issue</h3>
+<h3 id="type-of-change">Type of change</h3>
+<ul>
+<li>Bug Fix</li>
+<li>New Feature</li>
+<li>Breaking Change</li>
+<li>Code Refactoring</li>
+<li>Interface Change</li>
+<li>Documentation Update</li>
+</ul>
+<h3 id="test-case">Test Case</h3>
+<h3 id="validation-report">Validation Report</h3>
+<ul>
+<li></li>
+</ul>
+<h2 id="how-has-this-been-tested">How Has This Been Tested?</h2>
+<p>Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. Please also list any relevant details for your test configuration</p>
+<ul>
+<li>Test A</li>
+<li>Test B</li>
+</ul>
+<p><strong>Test Configuration</strong>:</p>
+<ul>
+<li>
+<p>Firmware version:</p>
+</li>
+<li>
+<p>Hardware:</p>
+</li>
+<li>
+<p>Toolchain:</p>
+</li>
+<li>
+<p>SDK:</p>
+</li>
+<li></li>
+</ul>
+<h3 id="描述">描述</h3>
+<h3 id="关联issue">关联issue</h3>
+<h3 id="修改类型">修改类型</h3>
+<ul>
+<li>问题修复</li>
+<li>新特性开发</li>
+<li>代码重构</li>
+<li>接口变更</li>
+<li>文档更新</li>
+</ul>
+<h3 id="测试用例">测试用例</h3>
+<h3 id="验证报告">验证报告</h3>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[ Introduction to SELinux]]></title>
         <id>https://jingwoo.github.io/post/introduction-to-selinux/</id>
