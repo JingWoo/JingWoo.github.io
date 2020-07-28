@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://jingwoo.github.io</id>
     <title>WuJing&apos;s Blog</title>
-    <updated>2020-07-28T08:22:02.917Z</updated>
+    <updated>2020-07-28T08:55:46.149Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://jingwoo.github.io"/>
     <link rel="self" href="https://jingwoo.github.io/atom.xml"/>
@@ -626,7 +626,7 @@ function configure_coc_plugins()
 	# yarn install --frozen-lockfile
 	# coc-clangd coc-cmake coc-sh coc-go coc-python coc-explorer coc-highlight 
 	rm -rf $(find ~ -name 'deoplete*')
-	sed -i 's/let g:spacevim_autocomplete_method = \'deoplete\'/let g:spacevim_autocomplete_method = \'coc\'' ${HOME}/.SpaceVim/autoload/SpaceVim.vim
+	sed -i &quot;s/let g:spacevim_autocomplete_method = 'deoplete'/let g:spacevim_autocomplete_method = 'coc'/g&quot; ${HOME}/.SpaceVim/autoload/SpaceVim.vim
 }
 
 function configure_vim()
@@ -720,9 +720,10 @@ case &quot;$TERM&quot; in
 esac
 EOF
 	fi
+
 	awk 'BEGIN{
 	    s=&quot;/\\/\\/\\/\\/\\&quot;; s=s s s s s s s s;
-	    for (colnum = 0; colnum&lt;77; colnum++) {
+	    for(colnum=0; colnum&lt;77; colnum++) {
 		r = 255-(colnum*255/76);
 		g = (colnum*510/76);
 		b = (colnum*255/76);
@@ -878,18 +879,19 @@ function main()
 	fi
 	info &quot;Starting set deployment environment for linux...&quot;
 	whoami
-	install_automation_tool
-	install_common_tools
-	configure_git
-	configure_terminal
-	configure_vim
-	configure_fzf
-	support_true_color_for_terminal
-	configure_tmux
-	set_development_environment
+	#install_automation_tool
+	#install_common_tools
+	#configure_git
+	#configure_terminal
+	#configure_vim
+	#configure_fzf
+	#support_true_color_for_terminal
+	#configure_tmux
+	#set_development_environment
 }
 
-main &quot;$@&quot;
+main $@
+
 </code></pre>
 ]]></content>
     </entry>
