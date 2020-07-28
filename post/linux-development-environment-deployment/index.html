@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta content="yes" name="apple-mobile-web-app-capable" />
+  <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+  <meta name="referrer" content="never">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="author" content="kveln">
+  <title>Linux Development Environment Deployment | WuJing&#39;s Blog</title>
+  <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <!-- <link href="https://jingwoo.github.io/media/css/bootstrap.min.css" rel="stylesheet"> -->
+  <!--  <link href="https://jingwoo.github.io/media/css/all.min.css" rel="stylesheet" type="text/css"> -->
+  <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+  <link rel="alternate" type="application/rss+xml" title="Linux Development Environment Deployment | WuJing&#39;s Blog » Feed" href="https://jingwoo.github.io/atom.xml">
+  <link rel="stylesheet"href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+  <link href="https://jingwoo.github.io/styles/main.css" rel="stylesheet">
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/highlight.min.js"></script>
+  <!-- <script src="https://jingwoo.github.io/media/scripts/jquery.min.js"></script> -->
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <meta property="og:description" content="Linux Development Environment Deployment"/>
+    <meta property="og:url" content="https://jingwoo.github.io/post/linux-development-environment-deployment/"/>
+    <meta property="og:locale" content="zh-CN"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content="WuJing&#39;s Blog"/>
+  </head>
+  <body>
+  	<!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand" href="https://jingwoo.github.io">WuJing&#39;s Blog</a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="https://jingwoo.github.io">首页</a>
+              
+          </li>
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="https://jingwoo.github.io/archives">归档</a>
+              
+          </li>
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="https://jingwoo.github.io/tags">标签</a>
+              
+          </li>
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="https://jingwoo.github.io/post/about">关于</a>
+              
+          </li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('https://jingwoo.github.io/media/images/home-bg.jpg')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+          	<span class="tags">
+          	 
+            <a href="https://jingwoo.github.io/tag/linux/" class="tag">linux</a>
+            
+        </span>
+            <h1>Linux Development Environment Deployment</h1>
+            <span class="meta">
+            	Posted on
+              2020-07-28，27 min read
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Content -->
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <h2 id="usage">Usage</h2>
+<pre><code class="language-bash">➜  linux_environment git:(master) ✗ ./setup.bash --help
+=================================================================================================
+        ███████╗███╗   ██╗██╗   ██╗    ██████╗ ███████╗██████╗ ██╗      ██████╗ ██╗   ██╗
+        ██╔════╝████╗  ██║██║   ██║    ██╔══██╗██╔════╝██╔══██╗██║     ██╔═══██╗╚██╗ ██╔╝
+        █████╗  ██╔██╗ ██║██║   ██║    ██║  ██║█████╗  ██████╔╝██║     ██║   ██║ ╚████╔╝
+        ██╔══╝  ██║╚██╗██║╚██╗ ██╔╝    ██║  ██║██╔══╝  ██╔═══╝ ██║     ██║   ██║  ╚██╔╝
+        ███████╗██║ ╚████║ ╚████╔╝     ██████╔╝███████╗██║     ███████╗╚██████╔╝   ██║
+        ╚══════╝╚═╝  ╚═══╝  ╚═══╝      ╚═════╝ ╚══════╝╚═╝     ╚══════╝ ╚═════╝    ╚═╝
+=================================================================================================
+Usage: ./setup.bash [options]
+Configure development environment for linux system
+Options:
+    -d, --distribution       linux distribution ([debian|redhat] series)
+    -u, --username           set user name for git
+    -e, --email              set email for git
+    -p, --password           password for root
+    -h, --help               Script help information
+</code></pre>
+<h3 id="example">example</h3>
+<pre><code class="language-bash">./setup.sh -d ubuntu -u username -e xxx@email.com -p password
+</code></pre>
+<h2 id="script">Script</h2>
+<pre><code class="language-bash">#!/bin/bash
+#
+# Configure development environment for linux system
+
+# set -euxo pipefail
+
+distro=&quot;fedora&quot;
+# for git configuration
+username=&quot;&quot;
+email=&quot;&quot;
+# for automation
+password=&quot;&quot;
+
+function info() {
+  echo &quot;[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@&quot; &gt;&amp;2
+}
+
+function auto()
+{
+	expect_file=$(mktemp /tmp/expect-script.XXXXXX)
+	cat &gt; ${expect_file} &lt;&lt; EOF
+set timeout -1
+match_max 100000
+spawn $@
+expect -exact &quot;password&quot;
+send -- &quot;${password}\r&quot;
+expect eof
+EOF
+	expect -f ${expect_file}
+	rm -rf ${expect_file}
+}
+
+function install_automation_tool()
+{
+	which expect
+	if [[ $? -eq 0 ]]; then
+		return
+	fi
+
+	if [[ ${distro} == &quot;ubuntu&quot; ]] || [[ ${distro} == &quot;debian&quot; ]]; then
+		sudo apt update  -y
+		sudo apt install -y expect
+	elif [[ ${distro} == &quot;fedora&quot; ]] || [[ ${distro} == &quot;centos&quot; ]]; then
+		sudo dnf upgrade -y
+		sudo dnf install -y expect
+	else
+		echo &quot;Unsupport other linux distro other than debian and redhat series&quot;
+	fi
+}
+
+function install_common_tools_for_debian_series()
+{
+	auto sudo apt update  -y
+	auto sudo apt upgrade -y
+
+	auto sudo apt install -y silversearcher-ag fd-find bat ccze git tig cmatrix screenfetch universal-ctags
+	auto sudo apt install -y fzf glances tmux shellcheck ranger aria2 axel cloc taskwarrior jq zsh npm
+	auto sudo apt install -y neovim cscope global python3-pip ca-certificates
+
+	auto sudo apt install -y build-essential nodejs golang clangd ruby-dev clang llvm
+	auto sudo apt install -y manpages-dev man-db manpages-posix-dev
+	auto sudo apt install -y libtool automake autoconf cmake pkgconf cmake
+	auto sudo apt install -y valgrind gdb gdbserver tcpdump systemtap ltrace strace
+}
+
+function install_common_tools_for_redhat_series()
+{
+	auto sudo dnf upgrade -y
+
+	auto sudo dnf install -y the_silver_searcher fd-find bat exa ccze git tig cmatrix screenfetch ctags 
+	auto sudo dnf install -y fzf glances tmux ShellCheck ranger aria2 axel cloc task jq zsh npm
+	auto sudo dnf install -y neovim cscope global python3-pip ca-certificates
+
+	auto dnf install -y nodejs golang clang llvm ruby-devel
+	auto dnf install -y valgrind gdb gdb-gdbserver tcpdump systemtap ltrace strace
+	auto dnf group install -y 'Development Tools' 
+	auto dnf install -y gcc gcc-c++ rpm-build rpm-devel rpmlint make python bash coreutils diffutils patch rpmdevtools
+}
+
+function install_common_tools()
+{
+	if [[ ${distro} == &quot;ubuntu&quot; ]] || [[ ${distro} == &quot;debian&quot; ]]; then
+		install_common_tools_for_debian_series
+	elif [[ ${distro} == &quot;fedora&quot; ]] || [[ ${distro} == &quot;centos&quot; ]]; then
+		install_common_tools_for_redhat_series
+	else
+		echo &quot;Unsupport other linux distro other than debian and redhat series&quot;
+	fi
+}
+
+function write_git_commit_template()
+{
+	cat &lt;&lt; EOF &gt; ${1}
+# [&lt;tag&gt;] (If applied, this commit will...) &lt;subject&gt; (Max 72 char)
+# |&lt;----   Preferably using up to 50 chars   ---&gt;|&lt;-------------------&gt;|
+# Example:
+# [feat] Implement automated commit messages
+
+# (Optional) Explain why this change is being made
+# |&lt;----   Try To Limit Each Line to a Maximum Of 72 Characters   ----&gt;|
+
+# (Optional) Provide links or keys to any relevant tickets, articles or other resources
+# Example: Github issue #23
+
+# --- COMMIT END ---
+# Tag can be 
+#    feat     (new feature)
+#    fix      (bug fix)
+#    refactor (refactoring code)
+#    style    (formatting, missing semi colons, etc; no code change)
+#    doc      (changes to documentation)
+#    test     (adding or refactoring tests; no production code change)
+#    version  (version bump/new release; no production code change)
+#    jsrXXX   (Patches related to the implementation of jsrXXX, where XXX the JSR number)
+#    jdkX     (Patches related to supporting jdkX as the host VM, where X the JDK version)
+#    dbg      (Changes in debugging code/frameworks; no production code change)
+#    license  (Edits regarding licensing; no production code change)
+#    hack     (Temporary fix to make things move forward; please avoid it)
+#    WIP      (Work In Progress; for intermediate commits to keep patches reasonably sized)
+#    defaults (changes default options)
+#
+# Note: Multiple tags can be combined, e.g. [fix][jsr292] Fix issue X with methodhandles
+# --------------------
+# Remember to:
+#   * Capitalize the subject line
+#   * Use the imperative mood in the subject line
+#   * Do not end the subject line with a period
+#   * Separate subject from body with a blank line
+#   * Use the body to explain what and why vs. how
+#   * Can use multiple lines with &quot;-&quot; or &quot;*&quot; for bullet points in body
+# --------------------
+EOF
+}
+
+function configure_git_diff()
+{
+	# npm config get registry
+
+	auto sudo npm config set registry https://registry.npm.taobao.org
+	auto sudo npm install -g diff-so-fancy
+
+	git config --global core.pager &quot;diff-so-fancy | less --tabs=4 -RFX&quot;
+	git config --global color.ui true
+	git config --global color.diff-highlight.oldNormal    &quot;red bold&quot;
+	git config --global color.diff-highlight.oldHighlight &quot;red bold 52&quot;
+	git config --global color.diff-highlight.newNormal    &quot;green bold&quot;
+	git config --global color.diff-highlight.newHighlight &quot;green bold 22&quot;
+
+	git config --global color.diff.meta       &quot;11&quot;
+	git config --global color.diff.frag       &quot;magenta bold&quot;
+	git config --global color.diff.commit     &quot;yellow bold&quot;
+	git config --global color.diff.old        &quot;red bold&quot;
+	git config --global color.diff.new        &quot;green bold&quot;
+	git config --global color.diff.whitespace &quot;red reverse&quot;
+	git config --bool --global diff-so-fancy.markEmptyLines false
+	git config --bool --global diff-so-fancy.changeHunkIndicators false
+	git config --bool --global diff-so-fancy.stripLeadingSymbols false
+	git config --bool --global diff-so-fancy.useUnicodeRuler false
+	# git log's commit header width
+	git config --global diff-so-fancy.rulerWidth 47
+}
+
+function configure_git()
+{
+	git config --global user.name ${username}
+	git config --global user.email ${email}
+	git config --global http.sslVerify false
+	git config --global core.editor nvim
+	# for mac or linux
+	git config --global core.autocrlf input
+	# for windows
+	# git config --global core.autocrlf false
+
+	write_git_commit_template ~/.git-commit-template.txt
+	git config --global commit.template ~/.git-commit-template.txt
+
+	configure_git_diff
+}
+
+function auto_install_zsh()
+{
+	expect_file=$(mktemp /tmp/expect-script.XXXXXX)
+	cat &gt; ${expect_file} &lt;&lt; EOF
+set timeout -1
+match_max 100000
+spawn $@
+expect -exact &quot;Y/n&quot;
+send &quot;Y\r&quot;
+expect -exact &quot;Password&quot;
+send -- &quot;${password}\r&quot;
+expect eof
+EOF
+	expect -f ${expect_file}
+	rm -rf ${expect_file}
+}
+
+function configure_terminal()
+{
+	# terminal configuration
+	if [[ -d ~/.oh-my-zsh ]]; then
+		rm -rf ~/.oh-my-zsh
+	fi
+
+	wget --no-check-certificate https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O on-my-zsh-install.sh
+	if [[ $? -ne 0 ]]; then
+		curl -fksSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o on-my-zsh-install.sh
+	fi
+
+	auto_install_zsh sh on-my-zsh-install.sh 
+	rm -rf on-my-zsh-install.sh
+	git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+	git clone https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search
+	git clone https://github.com/chrissicool/zsh-256color ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-256color
+	sed -i 's/fg=8/fg=3/g' ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+	sed -i 's/plugins=(git)/plugins=(git zsh-autosuggestions extract zsh-syntax-highlighting history-substring-search history zsh-256color vi-mode z wd taskwarrior)/g' ~/.zshrc
+	cat &lt;&lt; EOF &gt;&gt; ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+EOF
+}
+
+function alias_vim()
+{
+	cat &lt;&lt; EOF &gt;&gt; ~/.zshrc
+alias vi='nvim'
+alias vim='nvim'
+EOF
+}
+
+function configure_npm_source()
+{
+	mkdir -p ~/.pip
+	cat &lt;&lt; EOF &gt; ~/.pip/pip.conf
+[global]
+index-url = https://mirrors.aliyun.com/pypi/simple
+EOF
+}
+
+function language_support_vim()
+{
+  	configure_npm_source
+	npm config set registry https://registry.npm.taobao.org
+	yarn config set registry https://registry.npm.taobao.org
+	gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/
+	auto sudo npm install --global yarn
+
+	# curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+	axel -n 5 https://bootstrap.pypa.io/get-pip.py
+	auto sudo python2 get-pip.py
+	rm get-pip.py
+	auto sudo pip2 install --no-cache-dir --upgrade --force-reinstall neovim # -i https://pypi.tuna.tsinghua.edu.cn/simple
+	auto sudo pip3 install --no-cache-dir --upgrade --force-reinstall neovim # -i https://pypi.tuna.tsinghua.edu.cn/simple
+	auto sudo npm install -g neovim
+	auto sudo gem install neovim
+}
+
+function customize_spacevim_configuration()
+{
+	if [[ -f ~/.SpaceVim.d/init.toml ]]; then
+		mv ~/.SpaceVim.d/init.toml ~/.SpaceVim.d/init.toml.bak
+	fi
+	mkdir -p ~/.SpaceVim.d
+	cat &lt;&lt; EOF &gt; ~/.SpaceVim.d/init.toml
+[options]
+    # set spacevim theme. by default colorscheme layer is not loaded,
+    # if you want to use more colorscheme, please load the colorscheme
+    # layer
+    # colorscheme = &quot;gruvbox&quot;
+    colorscheme = &quot;NeoSolarized&quot;
+    colorscheme_bg = &quot;dark&quot;
+    # Disable guicolors in basic mode, many terminal do not support 24bit
+    # true colors
+    enable_guicolors = true
+    # Disable statusline separator, if you want to use other value, please
+    # install nerd fonts
+    statusline_separator = &quot;arrow&quot;
+    statusline_inactive_separator = &quot;bar&quot;
+    buffer_index_type = 4
+    windows_index_type = 3
+    enable_statusline_mode = true
+     # left sections of statusline
+    statusline_left_sections = [
+       'winnr',
+       'major mode',
+       'filename',
+       'fileformat',
+       'minor mode lighters',
+       'version control info',
+       'search status'
+    ]
+    # right sections of statusline
+    statusline_right_sections = [
+       'cursorpos',
+       'percentage',
+       'input method',
+       'date',
+       'time'
+    ]
+
+    enable_tabline_filetype_icon = true
+    enable_statusline_display_mode = true
+    statusline_unicode_symbols = true
+    realtime_leader_guide = 1
+    enable_statusline_tag = true
+    # Enable vim compatible mode, avoid changing origin vim key bindings
+    vimcompatible = true
+    automatic_update = true
+    enable_neomake = false
+    filemanager = &quot;defx&quot;
+
+[[custom_plugins]]
+	name = 'neoclide/coc.nvim'
+	merge = 0
+	build =  'yarn install --frozen-lockfile'
+	# branch = 'release'
+
+[[layers]]
+	name = 'shell'
+	default_position = 'right'
+
+[[layers]]
+	name = &quot;VersionControl&quot;
+	enable-gtm-status = true
+
+[[layers]]
+	name = &quot;checkers&quot;
+	show_cursor_error = false
+
+[[layers]]
+	name = &quot;colorscheme&quot;
+
+[[layers]]
+	name = &quot;git&quot;
+	git-plugin = &quot;fugitive&quot;
+
+[[layers]]
+	name = &quot;tmux&quot;
+
+[[layers]]
+	name = &quot;leaderf&quot;
+
+[[layers]]
+	name = &quot;sudo&quot;
+
+[[layers]]
+	name = &quot;tags&quot;
+
+[[layers]]
+	name = &quot;tools&quot;
+
+[[layers]]
+	name = 'core'
+EOF
+}
+
+function configure_init_vim()
+{
+	cat &lt;&lt; EOF &gt;&gt; ~/.SpaceVim/init.vim
+set tabstop=4
+set expandtab
+set shiftwidth=4
+nnoremap &lt;F9&gt; :set invpaste paste?&lt;CR&gt;
+set pastetoggle=&lt;F9&gt;
+set showmode
+set cmdheight=1
+
+let g:coc_global_extensions = ['coc-json','coc-clangd','coc-cmake','coc-explorer','coc-fzf-preview','coc-python','coc-spell-checker','coc-template','coc-go']
+&quot; let g:EasyMotion_do_mapping = 1
+
+&quot; filetype plugin indent on
+&quot; syntax enable
+&quot;
+&quot; Default value is &quot;normal&quot;, Setting this option to &quot;high&quot; or &quot;low&quot; does use the
+&quot; same Solarized palette but simply shifts some values up or down in order to
+&quot; expand or compress the tonal range displayed.
+let g:neosolarized_contrast = &quot;normal&quot;
+
+&quot; Special characters such as trailing whitespace, tabs, newlines, when displayed
+&quot; using &quot;:set list&quot; can be set to one of three levels depending on your needs.
+&quot; Default value is &quot;normal&quot;. Provide &quot;high&quot; and &quot;low&quot; options.
+let g:neosolarized_visibility = &quot;normal&quot;
+
+&quot; I make vertSplitBar a transparent background color. If you like the origin
+&quot; solarized vertSplitBar style more, set this value to 0.
+let g:neosolarized_vertSplitBgTrans = 1
+
+&quot; If you wish to enable/disable NeoSolarized from displaying bold, underlined
+&quot; or italicized&quot; typefaces, simply assign 1 or 0 to the appropriate variable.
+&quot; Default values:
+let g:neosolarized_bold = 1
+let g:neosolarized_underline = 1
+let g:neosolarized_italic = 0
+
+&quot; Used to enable/disable &quot;bold as bright&quot; in Neovim terminal. If colors of bold
+&quot; text output by commands like `ls` aren't what you expect, you might want to
+&quot; try disabling this option. Default value:
+let g:neosolarized_termBoldAsBright = 1
+
+&quot; TextEdit might fail if hidden is not set.
+set hidden
+
+&quot; Some servers have issues with backup files, see #649.
+set nobackup
+set nowritebackup
+
+&quot; Give more space for displaying messages.
+set cmdheight=2
+
+&quot; Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+&quot; delays and poor user experience.
+set updatetime=300
+
+&quot; Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
+
+&quot; Always show the signcolumn, otherwise it would shift the text each time
+&quot; diagnostics appear/become resolved.
+if has(&quot;patch-8.1.1564&quot;)
+  &quot; Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
+
+&quot; Use tab for trigger completion with characters ahead and navigate.
+&quot; NOTE: Use command ':verbose imap &lt;tab&gt;' to make sure tab is not mapped by
+&quot; other plugin before putting this into your config.
+inoremap &lt;silent&gt;&lt;expr&gt; &lt;TAB&gt;
+      \ pumvisible() ? &quot;\&lt;C-n&gt;&quot; :
+      \ &lt;SID&gt;check_back_space() ? &quot;\&lt;TAB&gt;&quot; :
+      \ coc#refresh()
+inoremap &lt;expr&gt;&lt;S-TAB&gt; pumvisible() ? &quot;\&lt;C-p&gt;&quot; : &quot;\&lt;C-h&gt;&quot;
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+&quot; Use &lt;c-space&gt; to trigger completion.
+if has('nvim')
+  inoremap &lt;silent&gt;&lt;expr&gt; &lt;c-space&gt; coc#refresh()
+else
+  inoremap &lt;silent&gt;&lt;expr&gt; &lt;c-@&gt; coc#refresh()
+endif
+
+&quot; Use &lt;cr&gt; to confirm completion, `&lt;C-g&gt;u` means break undo chain at current
+&quot; position. Coc only does snippet and additional edit on confirm.
+&quot; &lt;cr&gt; could be remapped by other vim plugin, try `:verbose imap &lt;CR&gt;`.
+if exists('*complete_info')
+  inoremap &lt;expr&gt; &lt;cr&gt; complete_info()[&quot;selected&quot;] != &quot;-1&quot; ? &quot;\&lt;C-y&gt;&quot; : &quot;\&lt;C-g&gt;u\&lt;CR&gt;&quot;
+else
+  inoremap &lt;expr&gt; &lt;cr&gt; pumvisible() ? &quot;\&lt;C-y&gt;&quot; : &quot;\&lt;C-g&gt;u\&lt;CR&gt;&quot;
+endif
+
+&quot; Use `[g` and `]g` to navigate diagnostics
+&quot; Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap &lt;silent&gt; [g &lt;Plug&gt;(coc-diagnostic-prev)
+nmap &lt;silent&gt; ]g &lt;Plug&gt;(coc-diagnostic-next)
+
+&quot; GoTo code navigation.
+nmap &lt;silent&gt; gd &lt;Plug&gt;(coc-definition)
+nmap &lt;silent&gt; gy &lt;Plug&gt;(coc-type-definition)
+nmap &lt;silent&gt; gi &lt;Plug&gt;(coc-implementation)
+nmap &lt;silent&gt; gr &lt;Plug&gt;(coc-references)
+
+&quot; Use K to show documentation in preview window.
+nnoremap &lt;silent&gt; K :call &lt;SID&gt;show_documentation()&lt;CR&gt;
+
+function! s:show_documentation()
+  if (index(['vim','help'], &amp;filetype) &gt;= 0)
+    execute 'h '.expand('&lt;cword&gt;')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+&quot; Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+&quot; Symbol renaming.
+nmap &lt;leader&gt;rn &lt;Plug&gt;(coc-rename)
+
+&quot; Formatting selected code.
+xmap &lt;leader&gt;f  &lt;Plug&gt;(coc-format-selected)
+nmap &lt;leader&gt;f  &lt;Plug&gt;(coc-format-selected)
+
+augroup mygroup
+  autocmd!
+  &quot; Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  &quot; Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+&quot; Applying codeAction to the selected region.
+&quot; Example: `&lt;leader&gt;aap` for current paragraph
+xmap &lt;leader&gt;a  &lt;Plug&gt;(coc-codeaction-selected)
+nmap &lt;leader&gt;a  &lt;Plug&gt;(coc-codeaction-selected)
+
+&quot; Remap keys for applying codeAction to the current buffer.
+nmap &lt;leader&gt;ac  &lt;Plug&gt;(coc-codeaction)
+&quot; Apply AutoFix to problem on the current line.
+nmap &lt;leader&gt;qf  &lt;Plug&gt;(coc-fix-current)
+
+&quot; Map function and class text objects
+&quot; NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+xmap if &lt;Plug&gt;(coc-funcobj-i)
+omap if &lt;Plug&gt;(coc-funcobj-i)
+xmap af &lt;Plug&gt;(coc-funcobj-a)
+omap af &lt;Plug&gt;(coc-funcobj-a)
+xmap ic &lt;Plug&gt;(coc-classobj-i)
+omap ic &lt;Plug&gt;(coc-classobj-i)
+xmap ac &lt;Plug&gt;(coc-classobj-a)
+omap ac &lt;Plug&gt;(coc-classobj-a)
+
+&quot; Use CTRL-S for selections ranges.
+&quot; Requires 'textDocument/selectionRange' support of LS, ex: coc-tsserver
+nmap &lt;silent&gt; &lt;C-s&gt; &lt;Plug&gt;(coc-range-select)
+xmap &lt;silent&gt; &lt;C-s&gt; &lt;Plug&gt;(coc-range-select)
+
+&quot; Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocAction('format')
+
+&quot; Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call     CocAction('fold', &lt;f-args&gt;)
+
+&quot; Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+&quot; Add (Neo)Vim's native statusline support.
+&quot; NOTE: Please see `:h coc-status` for integrations with external plugins that
+&quot; provide custom statusline: lightline.vim, vim-airline.
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+&quot; Mappings for CoCList
+&quot; Show all diagnostics.
+nnoremap &lt;silent&gt;&lt;nowait&gt; &lt;space&gt;a  :&lt;C-u&gt;CocList diagnostics&lt;cr&gt;
+&quot; Manage extensions.
+nnoremap &lt;silent&gt;&lt;nowait&gt; &lt;space&gt;e  :&lt;C-u&gt;CocList extensions&lt;cr&gt;
+&quot; Show commands.
+nnoremap &lt;silent&gt;&lt;nowait&gt; &lt;space&gt;c  :&lt;C-u&gt;CocList commands&lt;cr&gt;
+&quot; Find symbol of current document.
+nnoremap &lt;silent&gt;&lt;nowait&gt; &lt;space&gt;o  :&lt;C-u&gt;CocList outline&lt;cr&gt;
+&quot; Search workspace symbols.
+nnoremap &lt;silent&gt;&lt;nowait&gt; &lt;space&gt;s  :&lt;C-u&gt;CocList -I symbols&lt;cr&gt;
+&quot; Do default action for next item.
+nnoremap &lt;silent&gt;&lt;nowait&gt; &lt;space&gt;j  :&lt;C-u&gt;CocNext&lt;CR&gt;
+&quot; Do default action for previous item.
+nnoremap &lt;silent&gt;&lt;nowait&gt; &lt;space&gt;k  :&lt;C-u&gt;CocPrev&lt;CR&gt;
+&quot; Resume latest coc list.
+nnoremap &lt;silent&gt;&lt;nowait&gt; &lt;space&gt;p  :&lt;C-u&gt;CocListResume&lt;CR&gt;
+EOF
+}
+
+function set_background_translucent()
+{
+	cat &lt;&lt; EOF &gt;&gt; ${HOME}/.SpaceVim/config/init.vim
+func! s:transparent_background()
+    highlight Normal guibg=None ctermbg=None
+    highlight NonText guibg=None ctermbg=None
+endf
+autocmd ColorScheme * call s:transparent_background()
+EOF
+}
+
+function install_spacevim()
+{
+	curl -sLf https://spacevim.org/install.sh | bash -s -- --install neovim
+	customize_spacevim_configuration
+	configure_init_vim
+	set_background_translucent
+}
+
+function configure_coc_plugins()
+{
+	echo &quot;TODO: coc&quot;
+	# Reference:
+	# https://github.com/neoclide/coc.nvim
+	# https://github.com/neoclide/coc.nvim/wiki
+	# https://clangd.llvm.org/
+	#
+	# cd ~/.cache/vimfiles/repos/github.com/neoclide/coc.nvim
+	# git clean -xfd
+	# yarn install --frozen-lockfile
+	# coc-clangd coc-cmake coc-sh coc-go coc-python coc-explorer coc-highlight 
+	rm -rf $(find ~ -name 'deoplete*')
+	sed -i 's/let g:spacevim_autocomplete_method = \'deoplete\'/let g:spacevim_autocomplete_method = \'coc\'' ${HOME}/.SpaceVim/autoload/SpaceVim.vim
+}
+
+function configure_vim()
+{
+	# vim configuration
+	alias_vim
+	language_support_vim
+	install_spacevim
+	configure_coc_plugins
+}
+
+function customize_fzf_configuration()
+{
+	cat &lt;&lt; EOF &gt;&gt; ~/.zshrc
+alias fd=fdfind
+export FZF_DEFAULT_COMMAND='fd --hidden --follow -E &quot;.git&quot; -E &quot;node_modules&quot; . /etc /home'
+export FZF_DEFAULT_OPTS='--height 90% --layout=reverse --bind=alt-j:down,alt-k:up,alt-i:toggle+down --border --preview &quot;(bat --style=numbers --color=always {}) 2&gt; /dev/null | head -500&quot; --preview-window=down'
+
+# Use ~~ as the trigger sequence instead of the default **
+export FZF_COMPLETION_TRIGGER='~~'
+
+# Options to fzf command
+export FZF_COMPLETION_OPTS='+c -x'
+
+# Use fd (https://github.com/sharkdp/fd) instead of the default find
+# command for listing path candidates.
+# - The first argument to the function ($1) is the base path to start traversal
+# - See the source code (completion.{bash,zsh}) for the details.
+_fzf_compgen_path() {
+	fd --hidden --follow --exclude &quot;.git&quot; . &quot;$1&quot;
+}
+
+# Use fd to generate the list for directory completion
+_fzf_compgen_dir() {
+	fd --type d --hidden --follow --exclude &quot;.git&quot; . &quot;$1&quot;
+}
+
+# (EXPERIMENTAL) Advanced customization of fzf options via _fzf_comprun function
+# - The first argument to the function is the name of the command.
+# - You should make sure to pass the rest of the arguments to fzf.
+_fzf_comprun() {
+  local command=$1
+  shift
+
+  case &quot;$command&quot; in
+    cd)           fzf &quot;$@&quot; --preview 'tree -C {} | head -200' ;;
+    export|unset) fzf &quot;$@&quot; --preview &quot;eval 'echo \$'{}&quot; ;;
+    ssh)          fzf &quot;$@&quot; --preview 'dig {}' ;;
+    *)            fzf &quot;$@&quot; ;;
+  esac
+}
+EOF
+}
+
+function configure_fzf()
+{
+	# set command-line fuzzer finder
+	rm -rf ~/.fzf
+	git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+	alias curl='curl -k'
+	expect_file=$(mktemp /tmp/expect-script.XXXXXX)
+	cat &gt; ${expect_file} &lt;&lt; EOF
+set timeout -1
+match_max 100000
+spawn bash ${HOME}/.fzf/install
+expect -exact &quot;\[y\]/n&quot;
+send -- &quot;y\r&quot;
+expect -exact &quot;\[y\]/n&quot;
+send -- &quot;y\r&quot;
+expect -exact &quot;\[y\]/n&quot;
+send -- &quot;y\r&quot;
+expect eof
+EOF
+	expect -f ${expect_file}
+	rm -rf ${expect_file}
+	customize_fzf_configuration
+}
+
+function support_true_color_for_terminal()
+{
+	# terminal true-color support
+	if [[ $(tput colors) -ne 256 ]]; then
+		cat &lt;&lt; EOF &gt;&gt; /etc/profile
+case &quot;$TERM&quot; in
+	xterm)
+		export TERM=xterm-256color
+		;;
+	screen)
+		export TERM=screen-256color
+		;;
+esac
+EOF
+	fi
+	awk 'BEGIN{
+	    s=&quot;/\\/\\/\\/\\/\\&quot;; s=s s s s s s s s;
+	    for (colnum = 0; colnum&lt;77; colnum++) {
+		r = 255-(colnum*255/76);
+		g = (colnum*510/76);
+		b = (colnum*255/76);
+		if (g&gt;255) g = 510-g;
+		printf &quot;\033[48;2;%d;%d;%dm&quot;, r,g,b;
+		printf &quot;\033[38;2;%d;%d;%dm&quot;, 255-r,255-g,255-b;
+		printf &quot;%s\033[0m&quot;, substr(s,colnum+1,1);
+	    }
+	    printf &quot;\n&quot;;
+	}'
+
+	for T in $(find /usr/share/terminfo -type f -printf '%f '); do echo &quot;$T $(tput -T $T colors)&quot;; done | sort -nk2 | tail -n20
+}
+
+function configure_tmux()
+{
+	# tmux configuration
+	cd ${HOME}
+	rm -rf ${HOME}/.tmux
+	git clone https://github.com/gpakosz/.tmux.git ${HOME}/.tmux
+	rm -rf ${HOME}/.tmux.conf
+	ln -s -f ${HOME}/.tmux/.tmux.conf
+	rm -rf ${HOME}/.tmux.conf.local
+	cp ${HOME}/.tmux/.tmux.conf.local .
+	echo &quot;export EDITOR='vim'&quot; &gt;&gt; ~/.zshrc
+
+	auto sudo gem install tmuxinator
+	
+	cd ${HOME}/.tmux
+	mkdir plugins
+	git clone https://github.com/tmux-plugins/tmux-resurrect.git
+	cd ${HOME}/.tmux/plugins
+	git clone https://github.com/tmux-plugins/tmux-continuum.git
+
+	rm -rf ~/.bin/.tmuxinator.zsh
+	echo &quot;source ~/.bin/.tmuxinator.zsh&quot; &gt;&gt; ${HOME}/.zshrc
+	mkdir -p ${HOME}/.bin
+	# should escaping \$
+	cat &lt;&lt; EOF &gt; ${HOME}/.bin/.tmuxinator.zsh
+#compdef _tmuxinator tmuxinator
+
+_tmuxinator() {
+  local commands projects
+  commands=(\${(f)&quot;\$(tmuxinator commands zsh)&quot;})
+  projects=(\${(f)&quot;\$(tmuxinator completions start)&quot;})
+
+  if (( CURRENT == 2 )); then
+    _alternative \
+      'commands:: _describe -t commands &quot;tmuxinator subcommands&quot; commands' \
+      'projects:: _describe -t projects &quot;tmuxinator projects&quot; projects'
+  elif (( CURRENT == 3)); then
+    case \$words[2] in
+      copy|cp|c|debug|delete|rm|open|o|start|s|edit|e)
+        _arguments '*:projects:(\$projects)'
+      ;;
+    esac
+  fi
+
+  return
+}
+
+complete -F _tmuxinator tmuxinator mux
+alias mux=&quot;tmuxinator&quot;
+# Local Variables:
+# mode: Shell-Script
+# sh-indentation: 2
+# indent-tabs-mode: nil
+# sh-basic-offset: 2
+# End:
+# vim: ft=zsh sw=2 ts=2 et
+EOF
+
+	cat &lt;&lt; EOF &gt;&gt; ${HOME}/.tmux.conf.local
+set -g mouse on
+set -g status-keys vi
+set -g mode-keys vi
+
+# replace C-b by C-a instead of using both prefixes
+set-option -g prefix2 \` 
+
+unbind '&quot;'
+bind - splitw -v
+unbind %
+bind | splitw -h
+# move status line to top
+set -g status-position bottom
+
+run-shell ~/.tmux/plugins/tmux-resurrect/resurrect.tmux
+run-shell ~/.tmux/plugins/tmux-continuum/continuum.tmux
+set -g @continuum-save-interval '1440'
+set -g @continuum-restore 'on'
+bind C-c run &quot; tmux save-buffer - | xclip -i -sel clipboard&quot;
+bind C-v run &quot; tmux set-buffer &quot;\$(xclip -o -sel clipboard)&quot;; tmux paste-buffer&quot;
+EOF
+}
+
+function set_development_environment()
+{
+	# set c/c++ development environment
+	cat &lt;&lt; EOF &gt;&gt; ${HOME}/.zshrc
+export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/usr/local/lib/pkgconfig
+mkdir -p /corefile
+ulimit -c unlimited
+echo &quot;1&quot; &gt; /proc/sys/kernel/core_uses_pid
+echo &quot;/corefile/core-%e-%p-%t&quot; &gt; /proc/sys/kernel/core_pattern
+EOF
+
+	# TODO
+	auto sudo sh -c 'echo /usr/local/lib &gt;&gt; /etc/ld.so.conf'
+	auto sudo sh -c 'echo /usr/local/lib64 &gt;&gt; /etc/ld.so.conf'
+}
+
+function usage() {
+    echo -e &quot;\
+=================================================================================================\033[1;37m
+	███████╗███╗   ██╗██╗   ██╗    ██████╗ ███████╗██████╗ ██╗      ██████╗ ██╗   ██╗
+	██╔════╝████╗  ██║██║   ██║    ██╔══██╗██╔════╝██╔══██╗██║     ██╔═══██╗╚██╗ ██╔╝
+	█████╗  ██╔██╗ ██║██║   ██║    ██║  ██║█████╗  ██████╔╝██║     ██║   ██║ ╚████╔╝ 
+	██╔══╝  ██║╚██╗██║╚██╗ ██╔╝    ██║  ██║██╔══╝  ██╔═══╝ ██║     ██║   ██║  ╚██╔╝  
+	███████╗██║ ╚████║ ╚████╔╝     ██████╔╝███████╗██║     ███████╗╚██████╔╝   ██║   
+	╚══════╝╚═╝  ╚═══╝  ╚═══╝      ╚═════╝ ╚══════╝╚═╝     ╚══════╝ ╚═════╝    ╚═╝   \033[0m 
+=================================================================================================&quot;
+  echo &quot;Usage: $0 [options]&quot;
+  echo &quot;Configure development environment for linux system&quot;
+  echo &quot;Options:&quot;
+  echo &quot;    -d, --distribution       linux distribution ([debian|redhat] series)&quot; 
+  echo &quot;    -u, --username           set user name for git&quot; 
+  echo &quot;    -e, --email              set email for git&quot; 
+  echo &quot;    -p, --password           password for root&quot; 
+  echo &quot;    -h, --help               Script help information&quot;
+}
+
+function main()
+{
+	args=`getopt -o d:u:e:p:h --long distribution:,username:,email:,password:,help -- &quot;$@&quot;`
+	if [ $? != 0 ] ; then echo &quot;Terminating...&quot; &gt;&amp;2 ; exit 1 ; fi
+	eval set -- &quot;$args&quot;
+	
+	while true; do
+		case &quot;$1&quot; in
+    			-d|--distribution)      distro=&quot;$2&quot;; shift 2;;
+    			-u|--username)          username=&quot;$2&quot;; shift 2;;
+    			-e|--email)             email=&quot;$2&quot;; shift 2;;
+    			-p|--password)          password=&quot;$2&quot;; shift 2;;
+    			-h|--help)              usage ; exit 0 ;;
+    			--)                     shift ; break ;;
+    			*)                      err &quot;invalid parameter&quot; ; exit -1 ;;
+  		esac
+	done
+	
+	if [[ -z ${distro} ]] || [[ -z ${password} ]]; then
+		echo &quot;distribution and password requried&quot;
+	fi
+	info &quot;Starting set deployment environment for linux...&quot;
+	whoami
+	install_automation_tool
+	install_common_tools
+	configure_git
+	configure_terminal
+	configure_vim
+	configure_fzf
+	support_true_color_for_terminal
+	configure_tmux
+	set_development_environment
+}
+
+main &quot;$@&quot;
+</code></pre>
+
+          
+          <p class="next-post">下一篇：
+            <a href="https://jingwoo.github.io/post/issue-template/">
+              <span class="post-title">
+                Issue Template&rarr;
+              </span>
+            </a>
+          </p>
+        
+        <div class="comment">
+          
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<div id="gitalk-container"></div>
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'b1eac4da34d39de4083e',
+    clientSecret: '6288b2f1e40cdb4fb670392b100f60fcea5c5cff',
+    repo: 'jingwoo.github.io',
+    owner: 'jingwoo',
+    admin: ['jingwoo'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+  gitalk.render('gitalk-container')
+</script>
+
+          
+          
+        
+        </div>
+      </div>
+    </div>
+  </article>
+ <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <li class="list-inline-item">
+              <a href="https://jingwoo.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li>
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>WuJing&#39;s Blog</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://jingwoo.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://jingwoo.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <script src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  </body>
+</html>
+
