@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://jingwoo.github.io</id>
     <title>WuJing&apos;s Blog</title>
-    <updated>2020-08-01T08:38:04.411Z</updated>
+    <updated>2020-08-24T09:30:32.376Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://jingwoo.github.io"/>
     <link rel="self" href="https://jingwoo.github.io/atom.xml"/>
@@ -10,6 +10,414 @@
     <logo>https://jingwoo.github.io/images/avatar.png</logo>
     <icon>https://jingwoo.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, WuJing&apos;s Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[Fuzz测试学习]]></title>
+        <id>https://jingwoo.github.io/post/fuzz-ce-shi-xue-xi/</id>
+        <link href="https://jingwoo.github.io/post/fuzz-ce-shi-xue-xi/">
+        </link>
+        <updated>2020-08-24T09:29:28.000Z</updated>
+        <content type="html"><![CDATA[<p>模糊测试 （fuzz testing, fuzzing）是一种软件测试技术。其核心思想是将自动或半自动生成的随机数据输入到一个程序中，并监视程序异常，如崩溃，断言（assertion）失败，以发现可能的程序错误，比如内存泄漏。模糊测试常常用于检测软件或计算机系统的安全漏洞。</p>
+<p>模糊测试工具主要分为两类，变异测试（mutation-based）以及生成测试（generation-based）。模糊测试可以被用作白盒，灰盒或黑盒测试。</p>
+<p>1）基于变异：根据已知数据样本通过变异的方法生成新的测试用例；</p>
+<p>2）基于生成：根据已知的协议或接口规范进行建模，生成测试用例；</p>
+<h2 id="libfuzzer"><strong>libFuzzer</strong></h2>
+<p><strong>libFuzzer</strong> 是一个<code>in-process（进程内的）</code>，<code>coverage-guided（以覆盖率为引导的）</code>，<code>evolutionary（进化的）</code> 的 <code>fuzz</code> 引擎，是 <code>LLVM</code> 项目的一部分。</p>
+<ul>
+<li>
+<p><code>in-process（进程内的）</code>：<em>we mean that we don’t launch a new process for every test case, and that we mutate inputs directly in memory.</em> 我们并没有为每一个测试用例都开启一个新进程，而是在一个进程内直接将数据投放在内存中。</p>
+</li>
+<li>
+<p><code>coverage-guided（以覆盖率为引导的）</code>：<em>we mean that we measure code coverage for every input, and accumulate test cases that increase overall coverage.</em> 我们对每一个输入都进行代码覆盖率的计算，并且不断积累这些测试用例以使代码覆盖率最大化。</p>
+</li>
+<li>
+<p><code>evolutionary（进化的）</code>：fuzz按照类型分为3类，这是最后一种。</p>
+<blockquote>
+<p>第一类是基于生成的<code>Generation Based</code>通过对目标协议或文件格式建模的方法，从零开始产生测试用例，没有先前的状态；</p>
+<p>第二类为基于突变的<code>Evolutionary</code>基于一些规则，从已有的数据样本或存在的状态变异而来；</p>
+<p>最后一种就是基于进化的<code>Evolutionary</code>包含了上述两种，同时会根据代码覆盖率的回馈进行变异。</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>LibFuzzer</strong>和要被测试的库链接在一起，通过一个特殊的模糊测试进入点（目标函数），用测试用例feed（喂）要被测试的库。<strong>fuzzer</strong>会跟踪哪些代码区域已经测试过，然后在输入数据的语料库上产生变异，来最大化代码覆盖。其中代码覆盖的信息由LLVM的<strong>SanitizerCoverage</strong>插桩提供。</p>
+<pre><code class="language-C++">// fuzz_target.cc
+extern &quot;C&quot; int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
+  DoSomethingInterestingWithMyAPI(Data, Size);
+  return 0;  // Non-zero return values are reserved for future use.
+}
+</code></pre>
+<p><code>libfuzzer</code> 生成的<strong>测试数据以及测试数据的长度</strong>，Fuzz测试用例则把这些生成的测试数据传入到目标程序中让程序来处理测试数据， 同时要尽可能的触发更多的代码逻辑。</p>
+<h3 id="dictionaries"><a href="https://llvm.org/docs/LibFuzzer.html#id31">Dictionaries</a></h3>
+<p>字典可以提高<code>Fuzz</code>的性能与效率，对于每一个接口都有特性的数据格式。采用字典预先列举字符序列，fuzz可以直接根据这些感兴趣的字符序列进行组合，可以大量减少无效的尝试，且更容易覆盖更多更深的分支。</p>
+<pre><code class="language-AFL"># Lines starting with '#' and empty lines are ignored.
+
+# Adds &quot;blah&quot; (w/o quotes) to the dictionary.
+kw1=&quot;blah&quot;
+# Use \\ for backslash and \&quot; for quotes.
+kw2=&quot;\&quot;ac\\dc\&quot;&quot;
+# Use \xAB for hex values
+kw3=&quot;\xF7\xF8&quot;
+# the name of the keyword followed by '=' may be omitted:
+&quot;foo\x0Abar&quot;
+</code></pre>
+<pre><code class="language-bash"># 指定dict与corpus
+./fuzz_exec &lt;path_to_corpus&gt; -dict=&lt;path_to_dict&gt;  -runs=1000000 -max_total_time=3600
+# 精简语料
+./fuzz_exec -merge=1 &lt;path_to_corpus_min&gt; &lt;path_to_corpus&gt;
+</code></pre>
+<h2 id="mutating-multiple-inputs">Mutating Multiple Inputs</h2>
+<p>通常，模糊测试引擎仅提供一路输入，而被测API往往有多个输入，那就需要我们对输入进行突变或者拆分，使其符合API接口参数输入。</p>
+<h4 id="libprotobuf-mutatorlpm">libprotobuf-mutator（LPM）</h4>
+<p>https://github.com/google/libprotobuf-mutator/blob/master/src/libfuzzer/libfuzzer_macro.h</p>
+<pre><code class="language-bash">/ Registers the callback as a potential mutation performed on the parent
+// message of a field. This must be called inside an initialization code block.
+// libFuzzer suggests putting one-time-initialization in a function used to
+// initialize a static variable inside the fuzzer target. For example:
+//
+// static bool Modify(
+//     SomeMessage* message /* Fix or additionally modify the message */,
+//     unsigned int seed /* If random generator is needed use this seed */) {
+//   ...
+// }
+//
+// DEFINE_PROTO_FUZZER(const SomeMessage&amp; msg) {
+//   static PostProcessorRegistration reg(&amp;Modify);
+// }
+#define DEFINE_TEST_ONE_PROTO_INPUT_IMPL(use_binary, Proto)                 \
+  extern &quot;C&quot; int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) { \
+    using protobuf_mutator::libfuzzer::LoadProtoInput;                      \
+    Proto input;                                                            \
+    if (LoadProtoInput(use_binary, data, size, &amp;input))                     \
+      TestOneProtoInput(input);                                             \
+    return 0;                                                               \
+  }
+</code></pre>
+<p>**注意：**此方法适用于任何复杂性的API和数据结构，但需要编写一个<code>.proto</code>定义，以将原始输入数据（<code>data, size</code>）转变为protobuf消息（由proto文件生成的自动生成的C++类）传递给您正在模糊处理的API（获得模糊的protobuf消息而不是<code>data, size</code>缓冲区）。</p>
+<h3 id="magic-separator">Magic separator</h3>
+<pre><code class="language-c++">#include &lt;cassert&gt;
+#include &lt;cstdint&gt;
+#include &lt;cstdio&gt;
+#include &lt;cstdlib&gt;
+#include &lt;cstring&gt;
+
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+
+// Splits [data,data+size) into a vector of strings using a &quot;magic&quot; Separator.
+std::vector&lt;std::vector&lt;uint8_t&gt;&gt; SplitInput(const uint8_t *Data, size_t Size,
+                                     const uint8_t *Separator,
+                                     size_t SeparatorSize) {
+  std::vector&lt;std::vector&lt;uint8_t&gt;&gt; Res;
+  assert(SeparatorSize &gt; 0);
+  auto Beg = Data;
+  auto End = Data + Size;
+  // Using memmem here. std::search may be harder for libFuzzer today.
+  while (const uint8_t *Pos = (const uint8_t *)memmem(Beg, End - Beg,
+                                     Separator, SeparatorSize)) {
+    Res.push_back({Beg, Pos});
+    Beg = Pos + SeparatorSize;
+  }
+  if (Beg &lt; End)
+    Res.push_back({Beg, End});
+  return Res;
+}
+
+static volatile int *Nil = nullptr;
+
+extern &quot;C&quot; int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
+  if (Size &gt; 10) return 0;  // To make the test quick.
+  const uint8_t Separator[] = {0xDE, 0xAD, 0xBE, 0xEF};
+  auto Inputs = SplitInput(Data, Size, Separator, sizeof(Separator));
+  std::vector&lt;uint8_t&gt; Fuzz({'F', 'u', 'z', 'z'});
+  std::vector&lt;uint8_t&gt; Me({'m', 'e'});
+  if (Inputs.size() == 2 &amp;&amp; Inputs[0] == Fuzz &amp;&amp; Inputs[1] == Me)
+    *Nil = 42;  // crash.
+  return 0;
+}
+
+</code></pre>
+<h3 id="fuzzed-data-provider">Fuzzed Data Provider</h3>
+<p><a href="https://github.com/llvm/llvm-project/blob/master/compiler-rt/include/fuzzer/FuzzedDataProvider.h">FuzzedDataProvider</a>（<em>FDP</em>）可用于将模糊输入拆分为各种类型的多个部分。在项目中使用该类可以直接<code>#include &lt;fuzzer/FuzzedDataProvider.h&gt;</code>即可，如果没有的化直接将该类拷贝至项目中。</p>
+<pre><code class="language-C++">// In addition to the comments below, the API is also briefly documented at
+// https://github.com/google/fuzzing/blob/master/docs/split-inputs.md#fuzzed-data-provider
+class FuzzedDataProvider {
+ public:
+  // |data| is an array of length |size| that the FuzzedDataProvider wraps to
+  // provide more granular access. |data| must outlive the FuzzedDataProvider.
+  FuzzedDataProvider(const uint8_t *data, size_t size)
+      : data_ptr_(data), remaining_bytes_(size) {}
+  ~FuzzedDataProvider() = default;
+
+  // See the implementation below (after the class definition) for more verbose
+  // comments for each of the methods.
+
+  // Methods returning std::vector of bytes. These are the most popular choice
+  // when splitting fuzzing input into pieces, as every piece is put into a
+  // separate buffer (i.e. ASan would catch any under-/overflow) and the memory
+  // will be released automatically.
+  template &lt;typename T&gt; std::vector&lt;T&gt; ConsumeBytes(size_t num_bytes);
+  template &lt;typename T&gt;
+  std::vector&lt;T&gt; ConsumeBytesWithTerminator(size_t num_bytes, T terminator = 0);
+  template &lt;typename T&gt; std::vector&lt;T&gt; ConsumeRemainingBytes();
+
+  // Methods returning strings. Use only when you need a std::string or a null
+  // terminated C-string. Otherwise, prefer the methods returning std::vector.
+  std::string ConsumeBytesAsString(size_t num_bytes);
+  std::string ConsumeRandomLengthString(size_t max_length);
+  std::string ConsumeRandomLengthString();
+  std::string ConsumeRemainingBytesAsString();
+
+  // Methods returning integer values.
+  template &lt;typename T&gt; T ConsumeIntegral();
+  template &lt;typename T&gt; T ConsumeIntegralInRange(T min, T max);
+
+  // Methods returning floating point values.
+  template &lt;typename T&gt; T ConsumeFloatingPoint();
+  template &lt;typename T&gt; T ConsumeFloatingPointInRange(T min, T max);
+
+  // 0 &lt;= return value &lt;= 1.
+  template &lt;typename T&gt; T ConsumeProbability();
+
+  bool ConsumeBool();
+
+  // Returns a value chosen from the given enum.
+  template &lt;typename T&gt; T ConsumeEnum();
+
+  // Returns a value from the given array.
+  template &lt;typename T, size_t size&gt; T PickValueInArray(const T (&amp;array)[size]);
+  template &lt;typename T&gt; T PickValueInArray(std::initializer_list&lt;const T&gt; list);
+
+  // Writes data to the given destination and returns number of bytes written.
+  size_t ConsumeData(void *destination, size_t num_bytes);
+
+  // Reports the remaining bytes available for fuzzed input.
+  size_t remaining_bytes() { return remaining_bytes_; }
+
+ private:
+  FuzzedDataProvider(const FuzzedDataProvider &amp;) = delete;
+  FuzzedDataProvider &amp;operator=(const FuzzedDataProvider &amp;) = delete;
+
+  void CopyAndAdvance(void *destination, size_t num_bytes);
+
+  void Advance(size_t num_bytes);
+
+  template &lt;typename T&gt;
+  std::vector&lt;T&gt; ConsumeBytes(size_t size, size_t num_bytes);
+
+  template &lt;typename TS, typename TU&gt; TS ConvertUnsignedToSigned(TU value);
+
+  const uint8_t *data_ptr_;
+  size_t remaining_bytes_;
+};
+</code></pre>
+<h4 id="提取单个值的方法">提取单个值的方法</h4>
+<ul>
+<li><code>ConsumeBool</code>，<code>ConsumeIntegral</code>，<code>ConsumeIntegralInRange</code>方法是用于提取单个布尔或整数值（具体类型由模板参数定义的）。</li>
+<li><code>ConsumeProbability</code>，<code>ConsumeFloatingPoint</code>，<code>ConsumeFloatingPointInRange</code> 方法提取浮点值。</li>
+<li><code>ConsumeEnum</code>， <code>PickValueInArray</code>从一组预定义的值（例如枚举或数组）中选择模糊输入。</li>
+</ul>
+<h4 id="提取字节序列的方法">提取字节序列的方法</h4>
+<p>其中许多方法都有长度参数。通过调用提供程序对象上的<code>remaining_bytes()</code>方法，您始终可以知道在该提供程序对象中还剩下多少字节。</p>
+<ul>
+<li><code>ConsumeBytes</code>和<code>ConsumeBytesWithTerminator</code>方法返回指定长度的<code>std::vector</code></li>
+<li><code>ConsumeBytesAsString</code>方法返回指定长度的<code>std::string</code></li>
+<li><code>ConsumeRandomLengthString</code>方法也返回一个随机长度的<code>std::string</code>，提供最大长度参数。</li>
+<li><code>ConsumeRemainingBytes</code>和<code>ConsumeRemainingBytesAsString</code>方法分别返回 <code>std::vector</code>和<code>std::string</code>对象，并使用模糊输入中未使用的所有字节进行初始化。</li>
+<li><code>ConsumeData</code>方法将指定字节数从模糊输入复制到给定的指针（<code>void *destination</code>）</li>
+</ul>
+<p>eg1： <a href="https://cs.chromium.org/chromium/src/net/cert/internal/verify_name_match_fuzzer.cc?rcl=0be62a8d95f7fa1455fce1a76f0fa5b8484d0c8c">net_verify_name_match_fuzzer</a>将模糊输入分为两部分。</p>
+<pre><code class="language-c++">#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+
+#include &lt;vector&gt;
+
+#include &quot;net/der/input.h&quot;
+#include &quot;third_party/libFuzzer/src/utils/FuzzedDataProvider.h&quot;
+
+// Entry point for LibFuzzer.
+extern &quot;C&quot; int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
+  FuzzedDataProvider fuzzed_data(data, size);
+
+  // Intentionally using uint16_t here to avoid empty |second_part|.
+  size_t first_part_size = fuzzed_data.ConsumeIntegral&lt;uint16_t&gt;();
+  std::vector&lt;uint8_t&gt; first_part =
+      fuzzed_data.ConsumeBytes&lt;uint8_t&gt;(first_part_size);
+  std::vector&lt;uint8_t&gt; second_part =
+      fuzzed_data.ConsumeRemainingBytes&lt;uint8_t&gt;();
+
+  net::der::Input in1(first_part.data(), first_part.size());
+  net::der::Input in2(second_part.data(), second_part.size());
+  bool match = net::VerifyNameMatch(in1, in2);
+  bool reverse_order_match = net::VerifyNameMatch(in2, in1);
+  // Result should be the same regardless of argument order.
+  CHECK_EQ(match, reverse_order_match);
+  return 0;
+}
+</code></pre>
+<p>eg2: <a href="https://cs.chromium.org/chromium/src/net/spdy/fuzzing/http2_frame_decoder_fuzzer.cc?rcl=0be62a8d95f7fa1455fce1a76f0fa5b8484d0c8c">net_http2_frame_decoder_fuzzer</a> 读取小块数据，以模拟来自网络连接的一系列帧。</p>
+<pre><code class="language-c++">#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+
+#include &lt;list&gt;
+#include &lt;vector&gt;
+
+#include &quot;net/third_party/quiche/src/http2/decoder/http2_frame_decoder.h&quot;
+#include &quot;third_party/libFuzzer/src/utils/FuzzedDataProvider.h&quot;
+
+// Entry point for LibFuzzer.
+extern &quot;C&quot; int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
+  FuzzedDataProvider fuzzed_data_provider(data, size);
+  http2::Http2FrameDecoder decoder;
+
+  // Store all chunks in a function scope list, as the API requires the caller
+  // to make sure the fragment chunks data is accessible during the whole
+  // decoding process. |http2::DecodeBuffer| does not copy the data, it is just
+  // a wrapper for the chunk provided in its constructor.
+  std::list&lt;std::vector&lt;char&gt;&gt; all_chunks;
+  while (fuzzed_data_provider.remaining_bytes() &gt; 0) {
+    size_t chunk_size = fuzzed_data_provider.ConsumeIntegralInRange(1, 32);
+    all_chunks.emplace_back(
+        fuzzed_data_provider.ConsumeBytes&lt;char&gt;(chunk_size));
+    const auto&amp; chunk = all_chunks.back();
+
+    // http2::DecodeBuffer constructor does not accept nullptr buffer.
+    if (chunk.data() == nullptr)
+      continue;
+
+    http2::DecodeBuffer frame_data(chunk.data(), chunk.size());
+    decoder.DecodeFrame(&amp;frame_data);
+  }
+  return 0;
+}
+</code></pre>
+<p>eg3: <a href="https://cs.chromium.org/chromium/src/net/cert/crl_set_fuzzer.cc?rcl=0be62a8d95f7fa1455fce1a76f0fa5b8484d0c8c">net_crl_set_fuzzer</a>初始化了多个参数，并将其余的fuzz输入用作主参数</p>
+<pre><code class="language-C++">#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+
+#include &quot;net/cert/crl_set.h&quot;
+#include &quot;third_party/libFuzzer/src/utils/FuzzedDataProvider.h&quot;
+
+extern &quot;C&quot; int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
+  if (size &lt; 32 + 32 + 20)
+    return 0;
+
+  FuzzedDataProvider data_provider(data, size);
+  std::string spki_hash = data_provider.ConsumeBytesAsString(32);
+  std::string issuer_hash = data_provider.ConsumeBytesAsString(32);
+  size_t serial_length = data_provider.ConsumeIntegralInRange(4, 19);
+  std::string serial = data_provider.ConsumeBytesAsString(serial_length);
+  std::string crlset_data = data_provider.ConsumeRemainingBytesAsString();
+
+  scoped_refptr&lt;net::CRLSet&gt; out_crl_set;
+  net::CRLSet::Parse(crlset_data, &amp;out_crl_set);
+
+  if (out_crl_set) {
+    out_crl_set-&gt;CheckSPKI(spki_hash);
+    out_crl_set-&gt;CheckSerial(serial, issuer_hash);
+    out_crl_set-&gt;IsExpired();
+  }
+
+  return 0;
+}
+</code></pre>
+<p>eg4：<a href="https://cs.chromium.org/chromium/src/net/cookies/parse_cookie_line_fuzzer.cc?rcl=0be62a8d95f7fa1455fce1a76f0fa5b8484d0c8c">net_parse_cookie_line_fuzzer</a>用于稍微复杂一些的模糊目标，它使用模糊输入初始化的不同参数来模拟不同的动作</p>
+<pre><code class="language-C++">// Copyright 2016 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+
+#include &quot;base/logging.h&quot;
+#include &quot;net/cookies/parsed_cookie.h&quot;
+#include &quot;third_party/libFuzzer/src/utils/FuzzedDataProvider.h&quot;
+
+const std::string GetArbitraryString(FuzzedDataProvider* data_provider) {
+  // Adding a fudge factor to kMaxCookieSize so that both branches of the bounds
+  // detection code will be tested.
+  return data_provider-&gt;ConsumeRandomLengthString(
+      net::ParsedCookie::kMaxCookieSize + 10);
+}
+
+// Entry point for LibFuzzer.
+extern &quot;C&quot; int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
+  FuzzedDataProvider data_provider(data, size);
+  const std::string cookie_line = GetArbitraryString(&amp;data_provider);
+  net::ParsedCookie parsed_cookie(cookie_line);
+
+  // Call zero or one of ParsedCookie's mutator methods.  Should not call
+  // anything other than SetName/SetValue when !IsValid().
+  const uint8_t action = data_provider.ConsumeIntegralInRange(0, 10);
+  switch (action) {
+    case 1:
+      parsed_cookie.SetName(GetArbitraryString(&amp;data_provider));
+      break;
+    case 2:
+      parsed_cookie.SetValue(GetArbitraryString(&amp;data_provider));
+      break;
+  }
+
+  if (parsed_cookie.IsValid()) {
+    switch (action) {
+      case 3:
+        if (parsed_cookie.IsValid())
+          parsed_cookie.SetPath(GetArbitraryString(&amp;data_provider));
+        break;
+      case 4:
+        parsed_cookie.SetDomain(GetArbitraryString(&amp;data_provider));
+        break;
+      case 5:
+        parsed_cookie.SetExpires(GetArbitraryString(&amp;data_provider));
+        break;
+      case 6:
+        parsed_cookie.SetMaxAge(GetArbitraryString(&amp;data_provider));
+        break;
+      case 7:
+        parsed_cookie.SetIsSecure(data_provider.ConsumeBool());
+        break;
+      case 8:
+        parsed_cookie.SetIsHttpOnly(data_provider.ConsumeBool());
+        break;
+      case 9:
+        parsed_cookie.SetSameSite(GetArbitraryString(&amp;data_provider));
+        break;
+      case 10:
+        parsed_cookie.SetPriority(GetArbitraryString(&amp;data_provider));
+        break;
+    }
+  }
+
+  // Check that serialize/deserialize inverse property holds for valid cookies.
+  if (parsed_cookie.IsValid()) {
+    const std::string serialized = parsed_cookie.ToCookieLine();
+    net::ParsedCookie reparsed_cookie(serialized);
+    const std::string reserialized = reparsed_cookie.ToCookieLine();
+
+    // RFC6265 requires semicolons to be followed by spaces. Because our parser
+    // permits this rule to be broken, but follows the rule in ToCookieLine(),
+    // it's possible to serialize a string that's longer than the original
+    // input. If the serialized string exceeds kMaxCookieSize, the parser will
+    // reject it. For this fuzzer, we are considering this situation a false
+    // positive.
+    if (serialized.size() &lt;= net::ParsedCookie::kMaxCookieSize) {
+      CHECK(reparsed_cookie.IsValid());
+      CHECK_EQ(serialized, reserialized);
+    }
+  }
+
+  return 0;
+}
+</code></pre>
+<h3 id="基于哈希的参数">基于哈希的参数</h3>
+<p>如果您的API接受带有数据和某个整数值（即标志的按位组合）的缓冲区，则可以从（<code>data, size</code>）计算哈希值，并使用它来模糊附加的整数参数。例如：</p>
+<pre><code class="language-C++">extern &quot;C&quot; int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
+  std::string str = std::string(reinterpret_cast&lt;const char*&gt;(data), size);
+  std::size_t data_hash = std::hash&lt;std::string&gt;()(str);
+  APIToBeFuzzed(data, size, data_hash);
+  return 0;
+}
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Linux Tools Quick Tutorial]]></title>
         <id>https://jingwoo.github.io/post/linux-process-anasys/</id>
